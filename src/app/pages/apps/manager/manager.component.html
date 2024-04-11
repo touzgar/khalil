@@ -1,71 +1,75 @@
-<mat-card class="cardWithShadow">
-  <mat-card-content class="p-24">
-    <div class="row justify-content-between">
-      <div class="col-lg-4">
-        <mat-form-field appearance="outline" class="w-100 hide-hint">
-          <input
-            matInput
-            placeholder="Search Manager"
-            (keyup)="applyFilter($any($event.target).value)"
-          />
-          <mat-icon matSuffix>
-            <i-tabler name="search" class="icon-20"></i-tabler>
-          </mat-icon>
-        </mat-form-field>
+<div class="user-manager-container"[@fadeIn] >
+  <mat-toolbar color="primary" class="user-manager-toolbar">
+       <mat-form-field appearance="fill" class="toolbar-search-input">
+      <mat-label>Search Users</mat-label>
+      <input matInput (keyup)="applyFilter($event)" placeholder="Enter User Name">
+    </mat-form-field>
+    <span class="toolbar-spacer"></span>
+    <button mat-raised-button color="accent" class="add-user-button" (click)="openAddUserDialog()">
+      + ADD NEW USER
+    </button>
+  </mat-toolbar>
+  
+  <div class="user-manager-content">
+    <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+        <ng-container matColumnDef="username">
+        <th mat-header-cell *matHeaderCellDef> USER NAME </th>
+        <td mat-cell *matCellDef="let element"> {{element.username}} </td>
+      </ng-container>
+
+          <ng-container matColumnDef="email">
+        <th mat-header-cell *matHeaderCellDef> EMAIL </th>
+        <td mat-cell *matCellDef="let element"> {{element.email}} </td>
+      </ng-container>
+
+    <ng-container matColumnDef="roles">
+  <th mat-header-cell *matHeaderCellDef> ROLES </th>
+  <td mat-cell *matCellDef="let element">
+    <span *ngFor="let role of element.roles">{{ role.role }}</span>
+  </td>
+</ng-container>
+
+    
+      <ng-container matColumnDef="action">
+        <th mat-header-cell *matHeaderCellDef> ACTION </th>
+        <td mat-cell *matCellDef="let element">
+          <button mat-icon-button color="primary" aria-label="Edit user" (click)="openEditDialog(element)">
+            <mat-icon>edit</mat-icon>
+          </button>
+          
+          <button mat-icon-button color="warn" aria-label="Delete user" (click)="openDeleteDialog(element.userId)">
+            <mat-icon>delete</mat-icon>
+          </button>
+          
+          
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;" [@itemEnter]></tr>
+    </table>
+
+    <div class="custom-paginator">
+      
+      <button mat-icon-button (click)="loadPage(currentPage - 1)" [disabled]="currentPage === 1">
+        <mat-icon>chevron_left</mat-icon>
+      </button>
+    
+      
+      <div class="page-numbers">
+        <span *ngFor="let page of pageNumbers" class="page-number" [class.active]="currentPage === page" (click)="loadPage(page)">
+          {{ page }}
+        </span>
       </div>
-      <div class="col-lg-4 d-flex align-items-center justify-content-end">
-        <button mat-flat-button (click)="openDialog('Add', {})" color="primary">
-          Add Manager
-        </button>
+    
+      
+      <button mat-icon-button (click)="loadPage(currentPage + 1)" [disabled]="currentPage === pageNumbers.length">
+        <mat-icon>chevron_right</mat-icon>
+      </button>
+
+      <div class="paginator-info">
+        Showing {{ (currentPage - 1) * pageSize + 1 }}–{{ currentPage * pageSize > totalLength ? totalLength : currentPage * pageSize }} of {{ totalLength }}
       </div>
-    </div>
-  </mat-card-content>
-</mat-card>
-<mat-card class="cardWithShadow">
-  <mat-card-content class="p-24">
-    <div class="table-responsive">
-      <table mat-table [dataSource]="dataSource" class="w-100">
-        <ng-container matColumnDef="#">
-          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">#</th>
-          <td mat-cell *matCellDef="let element">{{ element.idManager }}</td>
-        </ng-container>
-
-        
-
-        <ng-container matColumnDef="managerName">
-          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">
-            managerName
-          </th>
-          <td mat-cell *matCellDef="let element" class="f-s-14">{{ element.managerName }}</td>
-        </ng-container>
-
-       
-        <ng-container matColumnDef="action">
-          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">
-            Action
-          </th>
-          <td mat-cell *matCellDef="let element" class="action-link">
-            <a
-              (click)="openDialog('Update', element)"
-              class="m-r-10 cursor-pointer"
-              ><i-tabler name="edit" class="icon-18"></i-tabler
-            ></a>
-            <a
-              (click)="openDialog('Delete', element)"
-              class="m-r-10 cursor-pointer"
-            >
-              <i-tabler name="trash" class="icon-18"></i-tabler>
-            </a>
-          </td>
-        </ng-container>
-
-        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
-      </table>
-      <mat-paginator
-        [pageSizeOptions]="[5, 10, 20]"
-        showFirstLastButtons
-      ></mat-paginator>
-    </div>
-  </mat-card-content>
-</mat-card>
+    </div> 
+  </div> 
+</div>

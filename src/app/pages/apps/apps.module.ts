@@ -8,7 +8,7 @@ import { NgxPermissionsModule } from 'ngx-permissions';
 import { NgxPaginationModule } from 'ngx-pagination';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { NgApexchartsModule } from 'ng-apexcharts';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { AngularEditorModule } from '@kolkov/angular-editor';
 import { NgScrollbarModule } from 'ngx-scrollbar';
 
@@ -115,12 +115,21 @@ import { RemovePlayersFromTeamDialogComponent } from './team/remove-players-from
 import { TournamentService } from './employee/tournament.service';
 import { AddTeamsToTournamentComponent } from './employee/add-teams-to-tournament/add-teams-to-tournament.component';
 import { RemoveTeamsToTournamentComponent } from './employee/remove-teams-to-tournament/remove-teams-to-tournament.component';
+import { MatTableModule } from '@angular/material/table';
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { AddUserPopupComponent } from './user/add-user-popup/add-user-popup.component';
+import { DeleteUserDialogComponent } from './user/delete-user-dialog/delete-user-dialog.component';
+import { EditUserDialogComponent } from './user/edit-user-dialog/edit-user-dialog.component';
+import { AuthInterceptor } from './user/auth.interceptor';
+import { AddUserManagerPopupComponent } from './manager/add-user-manager-popup/add-user-manager-popup.component';
 
 
 
 @NgModule({
   imports: [
-    
+    MatTableModule,
+    MatPaginatorModule,
+    MatDialogModule,
     CommonModule,
     RouterModule.forChild(AppsRoutes),
     MaterialModule,
@@ -208,7 +217,7 @@ AppAddAchievementTeamComponent,
 AppCoachComponent,
 AppAddCoachComponent,
 AppCoachDialogContentComponent,
-    AppInvoiceListComponent,
+ AppInvoiceListComponent,
     AppInvoiceViewComponent,
     AppAddInvoiceComponent,
     AppEditInvoiceComponent,
@@ -221,9 +230,13 @@ AppCoachDialogContentComponent,
     AddPlayersToTeamDialogComponent,
     RemovePlayersFromTeamDialogComponent,
     AddTeamsToTournamentComponent,
-    RemoveTeamsToTournamentComponent
+    RemoveTeamsToTournamentComponent,
+    AddUserPopupComponent,
+    DeleteUserDialogComponent,
+    EditUserDialogComponent,
+    AddUserManagerPopupComponent
      ],
-  providers: [DatePipe],
+  providers: [DatePipe,{ provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true }],
 
 })
 export class AppsModule {}

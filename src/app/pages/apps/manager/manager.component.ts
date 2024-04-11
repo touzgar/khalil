@@ -3,7 +3,15 @@ import { MatTableDataSource, MatTable } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { DatePipe } from '@angular/common';
-import { AppAddManagerComponent } from './add/add.component';
+import { Role } from '../../authentication/model/Role.model';
+import { User } from '../../authentication/model/login.model';
+import { UserService } from '../user/user.service';
+import { Router } from '@angular/router';
+
+import { DeleteUserDialogComponent } from '../user/delete-user-dialog/delete-user-dialog.component';
+import { EditUserDialogComponent } from '../user/edit-user-dialog/edit-user-dialog.component';
+import { trigger, transition, style, animate } from '@angular/animations';
+import { AddUserManagerPopupComponent } from './add-user-manager-popup/add-user-manager-popup.component';
 export interface Manager {
   idManager: number;
   managerName: string;
@@ -38,74 +46,143 @@ const managers = [
 ];
 
 @Component({
+  
   templateUrl: './manager.component.html',
+  styleUrls: ['./manager.component.scss'],
+  animations: [
+    trigger('fadeIn', [
+      transition(':enter', [
+        style({ opacity: 0 }),
+        animate('0.5s ease-out', style({ opacity: 1 })),
+      ]),
+    ]),
+    trigger('itemEnter', [
+      transition(':enter', [
+        style({ transform: 'translateY(-20px)', opacity: 0 }),
+        animate('0.35s ease-out', 
+          style({ transform: 'translateY(0)', opacity: 1 })),
+      ]),
+    ]),
+  ],
 })
 export class AppManagerComponent implements AfterViewInit {
   @ViewChild(MatTable, { static: true }) table: MatTable<any> = Object.create(null);
   searchText: any;
-  displayedColumns: string[] = [
-    '#',
-    'managerName',
-    'action'
+  displayedColumns: string[] = ['username', 'email','roles', 'action'];
 
-  ];
-  dataSource = new MatTableDataSource(managers);
-  @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator = Object.create(null);
+  dataSource = new MatTableDataSource<User>();
+  users? : User[];
+  role?:Role[];
+  totalLength: number = 0;
+  pageSize: number = 10; // Set page size to match your UI
+  currentPage: number = 1;
+  pageSizeOptions: number[] = [5, 10, 20,1000];
+  pageNumbers: number[] = [];
 
-  constructor(public dialog: MatDialog, public datePipe: DatePipe) { }
+
+
+  @ViewChild(MatPaginator) paginator: MatPaginator;
+
+  constructor(private userService: UserService,private router:Router,private dialog: MatDialog) {}
+
 
   ngAfterViewInit(): void {
-    this.dataSource.paginator = this.paginator;
+    this.refreshUserList();
+    this.dataSource.paginator = this.paginator; // Make sure paginator is assigned
   }
-
-  applyFilter(filterValue: string): void {
-    this.dataSource.filter = filterValue.trim().toLowerCase();
-  }
-
-  openDialog(action: string, obj: any): void {
-    obj.action = action;
-    const dialogRef = this.dialog.open(AppManagerDialogContentComponent, {
-      data: obj,
-    });
-    dialogRef.afterClosed().subscribe((result) => {
-      if (result.event === 'Add') {
-        this.addRowData(result.data);
-      } else if (result.event === 'Update') {
-        this.updateRowData(result.data);
-      } else if (result.event === 'Delete') {
-        this.deleteRowData(result.data);
-      }
+  refreshUserList(): void {
+    this.userService.listeUsers().subscribe((users: User[]) => {
+      this.dataSource.data = users; // Update your MatTableDataSource data
     });
   }
 
-  // tslint:disable-next-line - Disables all
-  addRowData(row_obj: Manager): void {
-    this.dataSource.data.unshift({
-      idManager: managers.length + 1,
-      managerName: row_obj.managerName,
+  openAddUserDialog(): void {
+    const dialogRef = this.dialog.open(AddUserManagerPopupComponent, {
+      width: '600px'
+    });
   
-     
-    });
-    this.dialog.open(AppAddManagerComponent);
-    this.table.renderRows();
-  }
-
-  // tslint:disable-next-line - Disables all
-  updateRowData(row_obj: Manager): boolean | any {
-    this.dataSource.data = this.dataSource.data.filter((value: any) => {
-      if (value.idManager === row_obj.idManager) {
-        value.managerName = row_obj.managerName;
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        console.log('New user added', result);
+        this.refreshUserList(); // Refresh the user list
       }
-      return true;
     });
+  }
+  openDeleteDialog(userId: number): void {
+    const dialogRef = this.dialog.open(DeleteUserDialogComponent, {
+      width: '300px',
+    });
+  
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        // Call the method to delete the user if the user confirms deletion
+        this.userService.deleteUser(userId).subscribe(() => {
+          // After successful deletion, refresh the user list
+          this.refreshUserList();
+        }, error => {
+          // Handle error if deletion fails
+          console.error('Error deleting user:', error);
+        });
+      }
+    });
+  }
+  
+  openEditDialog(user: any): void {
+    const dialogRef = this.dialog.open(EditUserDialogComponent, {
+      width: '400px',
+      data: { ...user }
+    });
+  
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.userService.updateUser(user.userId, result).subscribe(updatedUser => {
+          console.log('Updated user:', updatedUser);
+          // Refresh the user list or perform any necessary actions
+          this.refreshUserList();
+        }, error => {
+          console.error('Error updating user:', error);
+        });
+      }
+    });
+  }
+  
+  
+  
+  
+  private initializePageNumbers() {
+    const pageCount = Math.ceil(this.totalLength / this.pageSize);
+    this.pageNumbers = Array.from({ length: pageCount }, (_, i) => i + 1);
   }
 
-  // tslint:disable-next-line - Disables all
-  deleteRowData(row_obj: Manager): boolean | any {
-    this.dataSource.data = this.dataSource.data.filter((value: any) => {
-      return value.idManager !== row_obj.idManager;
-    });
+  loadPage(page: number = this.currentPage) {
+    const startIndex = (page - 1) * this.pageSize;
+    const endIndex = startIndex + this.pageSize;
+    // Added non-null assertion operator (!) to assure that users is not undefined
+    this.dataSource.data = this.users!.slice(startIndex, endIndex);
+    this.currentPage = page;
   }
+
+  setPageSize(size: number) {
+    this.pageSize = size;
+    this.initializePageNumbers();
+    this.loadPage(1);
+  }
+
+  // listeUser(): void {
+  //   this.userService.listeUsers().subscribe((users: User[]) => {
+  //     this.users = users;
+  //   });
+  // }
+
+  applyFilter(event: Event) {
+    const filterValue = (event.target as HTMLInputElement).value;
+    this.dataSource.filter = filterValue.trim().toLowerCase();
+
+    if (this.dataSource.paginator) {
+      this.dataSource.paginator.firstPage();
+    }
+  }
+  
 }
 
 @Component({

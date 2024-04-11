@@ -1,0 +1,33 @@
+<!-- Edit User Popup Component HTML -->
+<div class="popup-container">
+    <div class="popup-header">
+      <span class="popup-title">Edit User</span>
+      <button class="close-button" (click)="onCancel()">&times;</button>
+    </div>
+    <form (ngSubmit)="onSubmit()">
+      <div class="form-group">
+        <label for="edit-username">Username:</label>
+        <input type="text" id="edit-username" name="username" [(ngModel)]="userData.username" required>
+      </div>
+      <div class="form-group">
+        <label for="edit-email">Email:</label>
+        <input type="email" id="edit-email" name="email" [(ngModel)]="userData.email" required>
+      </div>
+       <div class="form-group">
+        <label for="edit-password">Password:</label>
+        <input type="password" id="edit-password" name="password" [(ngModel)]="userData.password" required>
+      </div> 
+      <!-- <div class="form-group">
+        <label for="edit-roles">Roles:</label>
+        <select id="edit-roles" name="roles" [(ngModel)]="userData.roles" >
+          <option value="Admin">Admin</option>
+          <option value="Manager">Manager</option>
+        </select>
+      </div> -->
+      <div class="button-group">
+        <button type="submit" class="btn btn-primary">Save</button>
+        <button type="button" class="btn btn-secondary" (click)="onCancel()">Cancel</button>
+      </div>
+    </form>
+  </div>
+  

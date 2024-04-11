@@ -1,0 +1,149 @@
+/* Style adjustments for the popup container */
+.popup-container {
+    width: 100%; /* Full width of the popup */
+    max-width: 600px; /* Maximum width of the popup */
+    margin: auto; /* Centering the popup */
+   background-color: #f5f5f5; /* White background for the popup */
+    border-radius: 8px; /* Rounded corners for the popup */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Shadow for the popup */
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    overflow: hidden; /* Hides the overflow to ensure the background doesn't show */
+}
+
+/* Style adjustments for the header bar */
+.popup-header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 16px;
+    background-color: #f7f7f7; /* Light grey background for the header bar */
+    color: #333;
+}
+
+/* Style adjustments for the title in the header */
+.popup-title {
+    font-size: 20px;
+    font-weight: 600;
+    text-align: center;
+}
+
+/* Style adjustments for the close button */
+.close-button {
+    position: absolute;
+    right: 16px;
+    top: 16px;
+    font-size: 24px;
+    cursor: pointer;
+    border: none;
+    background: none;
+    color: #333;
+}
+
+/* Hover effect for the close button */
+.close-button:hover {
+    opacity: 0.8;
+}
+
+/* Adjustments for form groups to ensure full width */
+.form-group {
+    padding: 0 16px; /* Padding to match the popup-container */
+}
+
+/* Specific adjustments for the "Add New User" input */
+.form-group:first-of-type input {
+    margin: 0 1px; /* Negative margin to counteract padding and extend full width */
+    width: calc(100% + 32px); /* Adjust width to account for negative margins */
+}
+
+/* General style for labels */
+.form-group label {
+    font-size: 13px;
+    color: #333;
+    font-weight: bold;
+    margin-bottom: 8px;
+}
+
+/* General style for input fields */
+.form-group input,
+.form-group select {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
+    margin-bottom: 16px;
+    
+}
+/* Style for the username input field */
+#username {
+    width: 100%; /* Full width of the container */
+    padding: 12px 16px; /* Padding for inside the input */
+    border: 1px solid #ccc; /* Border color and width */
+    border-radius: 4px; /* Rounded corners for the input */
+    font-size: 16px; /* Font size for the text inside the input */
+    box-sizing: border-box; /* Box sizing to ensure padding is included in the width */
+    background-color: #fff; /* Background color of the input field */
+    margin-bottom: 16px; /* Margin at the bottom of the input field */
+}
+
+
+/* Style for the buttons at the bottom of the form */
+.button-group {
+    display: flex;
+    justify-content: center; /* Centers buttons horizontally */
+    align-items: center; /* Aligns buttons vertically */
+    padding: 16px; /* Padding inside the button group */
+    gap: 20px; /* Space between buttons */
+}
+
+/* General style for buttons */
+.button-group button {
+    padding: 12px 36px;
+    /*Comfortablepaddingaroundthetext*/  border-radius: 30px;
+    /*Smoothroundedcorners*/border: none;
+    /*Noborder*/cursor: pointer;
+    /*Cursorindicatesbutton*/font-size: 16px;
+    /*Textsizewithinthebutton*/font-weight: 500;
+    /*Fontweightisneithertooboldnortoolight*/transition: all 0.3s ease;
+    /*Smoothtransitionforinteractions*/text-transform: uppercase;
+    /*Optional:;
+    Makesbuttontextuppercase*/letter-spacing: 1px;
+    /*Optional:;
+    Increasesspacingbetweencharacters*/min-width: 120px;
+    /*Minimumwidthtoensurebuttonsareofthesamesize*/box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
+   
+}
+
+/* Primary button styling */
+.btn-primary {
+    background-color: #767b98;
+    color: #fff;
+    /* Slight shadow for depth */
+    box-shadow: 0px 4px 10px rgba(63, 81, 181, 0.2);
+}
+
+/* Secondary button styling */
+.btn-secondary {
+    background-color: #6c757d;
+    color: #fff;
+    /* Slight shadow for depth */
+    box-shadow: 0px 4px 10px rgba(108, 117, 125, 0.2);
+}
+
+/* Hover effect for primary button */
+.btn-primary:hover {
+    background-color: #344593; /* Darker shade when hovered */
+}
+
+/* Hover effect for secondary button */
+.btn-secondary:hover {
+    background-color: #346da5; /* Darker shade when hovered */
+}
+
+/* Focus styles for accessibility */
+.button-group button:focus {
+    outline: none; /* Removes the default outline */
+    box-shadow: 0 0 0 2px #fff, 0 0 0 4px #3f51b5; /* Custom focus ring */
+}

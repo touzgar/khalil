@@ -1,0 +1,46 @@
+<!-- add-user-popup.component.html -->
+<div class="popup-container">
+  <div class="popup-header">
+    <span class="popup-title">Add New User</span>
+    <div style="display: flex; align-items: center;">
+        <div class="separator"></div>
+        <button class="close-button" (click)="onCancel()">&times;</button>
+    </div>
+</div>
+    <form (ngSubmit)="onSubmit()">
+      <div class="form-group">
+        <label for="username">Username:</label>
+        <input type="text" id="username" name="username" [(ngModel)]="userData.username" required>
+    </div>
+      <div class="form-group">
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" [(ngModel)]="userData.email" required>
+      </div>
+      <div class="form-group">
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" [(ngModel)]="userData.password" required>
+      </div>
+      <div class="form-group">
+        <label for="roles">Roles:</label>
+        <select id="roles" name="roles" [(ngModel)]="userData.roleName" required>
+          <option value="manager">Manager</option>
+          <option value="admin">Admin</option>
+        </select> 
+      </div>
+      <!-- <div class="form-group">
+        <label for="image">Image:</label>
+        <input type="file" (change)="onImageUpload($event)" name="logo" />
+      </div>
+      <div class="form-group">
+      
+<img *ngIf="imagePath" [src]="imagePath" class="img-fluid rounded-start" alt="Uploaded Image Preview">
+
+      </div> -->
+      <div class="button-group">
+        <button type="submit" class="btn btn-primary">Save</button>
+        <button type="button" class="btn btn-secondary" (click)="onCancel()">Cancel</button>
+      </div>
+      
+    </form>
+  </div>
+  

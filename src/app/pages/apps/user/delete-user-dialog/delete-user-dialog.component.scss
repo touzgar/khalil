@@ -1,0 +1,121 @@
+/* Style adjustments for the popup container */
+.popup-container {
+    width: 100%; /* Full width of the popup */
+    max-width: 600px; /* Maximum width of the popup */
+    margin: auto; /* Centering the popup */
+    background-color: #f5f5f5; /* White background for the popup */
+    border-radius: 8px; /* Rounded corners for the popup */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Shadow for the popup */
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    overflow: hidden; /* Hides the overflow to ensure the background doesn't show */
+  }
+  
+  /* Style adjustments for the header bar */
+  .popup-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px;
+    background-color: #f7f7f7; /* Light grey background for the header bar */
+    color: #333;
+    position: relative; /* Required for absolute positioning of the close button */
+  }
+  
+  /* Style adjustments for the title in the header */
+  .popup-title {
+    font-size: 20px;
+    font-weight: 600;
+    text-align: center;
+    flex-grow: 1; /* Ensure the title is centered */
+  }
+  
+  /* Style adjustments for the close button */
+  .close-button {
+    position: absolute;
+    right: 16px;
+    top: 16px;
+    font-size: 24px;
+    cursor: pointer;
+    border: none;
+    background: none;
+    color: #333;
+  }
+  
+  /* Hover effect for the close button */
+  .close-button:hover {
+    opacity: 0.8;
+  }
+  
+  /* General style for labels */
+  .form-group label {
+    font-size: 13px;
+    color: #333;
+    font-weight: bold;
+    margin-bottom: 8px;
+  }
+  
+  /* General style for input fields */
+  .form-group input,
+  .form-group select {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
+    margin-bottom: 16px;
+  }
+  
+  /* Style for the buttons at the bottom of the form */
+  .button-group {
+    display: flex;
+    justify-content: center; /* Centers buttons horizontally */
+    align-items: center; /* Aligns buttons vertically */
+    padding: 16px; /* Padding inside the button group */
+    gap: 20px; /* Space between buttons */
+  }
+  
+  /* General style for buttons */
+  .button-group button {
+    padding: 12px 36px;
+    border-radius: 30px; /* Smooth rounded corners */
+    border: none; /* No border */
+    cursor: pointer; /* Cursor indicates button */
+    font-size: 16px; /* Text size within the button */
+    font-weight: 500; /* Font weight is neither too bold nor too light */
+    transition: all 0.3s ease; /* Smooth transition for interactions */
+    text-transform: uppercase; /* Makes button text uppercase */
+    letter-spacing: 1px; /* Increases spacing between characters */
+    min-width: 120px; /* Minimum width to ensure buttons are of the same size */
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2); /* Adds a slight shadow for depth */
+  }
+  
+  /* Primary button styling */
+  .btn-primary {
+    background-color: #767b98;
+    color: #fff;
+  }
+  
+  /* Secondary button styling */
+  .btn-secondary {
+    background-color: #6c757d;
+    color: #fff;
+  }
+  
+  /* Hover effect for primary button */
+  .btn-primary:hover {
+    background-color: #344593; /* Darker shade when hovered */
+  }
+  
+  /* Hover effect for secondary button */
+  .btn-secondary:hover {
+    background-color: #346da5; /* Darker shade when hovered */
+  }
+  
+  /* Focus styles for accessibility */
+  .button-group button:focus {
+    outline: none; /* Removes the default outline */
+    box-shadow: 0 0 0 2px #fff, 0 0 0 4px #3f51b5; /* Custom focus ring */
+  }
+  
