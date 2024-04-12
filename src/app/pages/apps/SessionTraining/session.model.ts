@@ -1,3 +1,5 @@
+import { User } from "../../authentication/model/login.model";
+import { Role } from "../../authentication/model/Role.model";
 import { Coach } from "../coach/coach.model";
 import { Player } from "../player/player";
 
@@ -12,6 +14,9 @@ export class Session {
   coach: Coach;
   coachName: string;
   playerNames: string;
+  user:User;
+  role:Role;
+  username:string;
     // Other properties as needed
   }
   

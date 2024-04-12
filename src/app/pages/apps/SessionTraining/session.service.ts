@@ -2,6 +2,8 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { AuthServiceService } from '../../authentication/auth-service.service';
+import { User } from '../../authentication/model/login.model';
+import { Player } from '../player/player';
 import { Session } from './session.model';
 
 
@@ -63,6 +65,19 @@ rechercheParNameSession(sessionName: string): Observable<Session[]> {
   });
 
   return this.http.get<Session[]>(url, { headers: httpHeaders });
+}
+getCoaches(): Observable<User[]> {
+  let jwt=this.authService.getToken();
+    jwt="Bearer "+jwt;
+    let httpHeaders=new HttpHeaders({"Authorization":jwt});
+  return this.http.get<User[]>(`${this.baseUrl}/coaches`, { headers: this.getHeaders() });
+}
+
+getPlayers(): Observable<Player[]> {
+  let jwt=this.authService.getToken();
+    jwt="Bearer "+jwt;
+    let httpHeaders=new HttpHeaders({"Authorization":jwt});
+  return this.http.get<Player[]>(`${this.baseUrl}/players`, { headers: this.getHeaders() });
 }
 
 }
