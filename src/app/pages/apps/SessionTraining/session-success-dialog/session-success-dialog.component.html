@@ -1,0 +1,14 @@
+<div mat-dialog-container class="success-dialog-container">
+    <h2 mat-dialog-title class="success-title">
+      <mat-icon class="success-icon">check_circle_outline</mat-icon>
+      {{ data.message }}
+    </h2>
+    <mat-dialog-content class="dialog-content">
+      <p>You can find your session at the end of the table.</p>
+    </mat-dialog-content>
+  
+    <mat-dialog-actions class="dialog-actions">
+      <button mat-button (click)="closeDialog()" class="close-button">OK</button>
+    </mat-dialog-actions>
+  </div>
+  

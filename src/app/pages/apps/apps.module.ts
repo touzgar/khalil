@@ -122,11 +122,18 @@ import { DeleteUserDialogComponent } from './user/delete-user-dialog/delete-user
 import { EditUserDialogComponent } from './user/edit-user-dialog/edit-user-dialog.component';
 import { AuthInterceptor } from './user/auth.interceptor';
 import { AddUserManagerPopupComponent } from './manager/add-user-manager-popup/add-user-manager-popup.component';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { SessionErrorDialogComponent } from './SessionTraining/session-error-dialog/session-error-dialog.component';
+import { SessionSuccessDialogComponent } from './SessionTraining/session-success-dialog/session-success-dialog.component';
 
 
 
 @NgModule({
   imports: [
+    MatDialogModule,
+    MatButtonModule,
+ 
+    MatSnackBarModule,
     MatTableModule,
     MatPaginatorModule,
     MatDialogModule,
@@ -234,7 +241,9 @@ AppCoachDialogContentComponent,
     AddUserPopupComponent,
     DeleteUserDialogComponent,
     EditUserDialogComponent,
-    AddUserManagerPopupComponent
+    AddUserManagerPopupComponent,
+    SessionErrorDialogComponent,
+    SessionSuccessDialogComponent
      ],
   providers: [DatePipe,{ provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true }],
 

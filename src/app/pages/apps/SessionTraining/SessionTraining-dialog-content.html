@@ -75,18 +75,23 @@
 
 <!-- Field for coachName -->
 <div class="col-lg-4">
-<mat-form-field appearance="outline" class="w-100">
-  <input matInput required id="coachName" name="coachName"  type="text"
-
-         [(ngModel)]="local_data.username" placeholder="Coach Name">
-</mat-form-field>
+  <mat-form-field appearance="outline" class="w-100">
+    <mat-select placeholder="Coach Name" name="coachName" [(ngModel)]="local_data.username">
+      <mat-option *ngFor="let coach of local_data.coaches" [value]="coach.username">
+        {{ coach.username }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
 </div>
 <!-- Field for playerNames -->
 <div class="col-lg-4">
-<mat-form-field appearance="outline" class="w-100">
-  <input matInput id="playerNames" name="playerNames"
-         [(ngModel)]="local_data.playerNames" placeholder="Player Names (comma-separated)">
-</mat-form-field>
+  <mat-form-field appearance="outline" class="w-100">
+    <mat-select multiple placeholder="Player Names" name="playerNames" [(ngModel)]="local_data.playerNames">
+      <mat-option *ngFor="let player of local_data.players" [value]="player.leagalefullname">
+        {{ player.leagalefullname }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
 </div>
 <!-- ... existing buttons ... -->
 
@@ -112,6 +117,7 @@
     </button>
   </form>
 </mat-dialog-content>
+
 } @else {
 <div class="p-x-24">
   <p>Sure to delete <span class="f-w-600">{{local_data.Name}}</span> ?</p>
@@ -122,4 +128,5 @@
   </button>
   <button mat-button (click)="closeDialog()" class="m-l-8">Cancel</button>
 </div>
+
 }

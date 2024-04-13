@@ -15,6 +15,9 @@ import { Session } from './session.model';
 export class SessionService {
 session:Session[];
 baseUrl = 'http://localhost:8089/users/api/session';
+apiUrl='http://localhost:8089/users'
+url='http://localhost:8089/users/api/player'
+api='http://localhost:8089/users/api/scrims'
 
   constructor(private http:HttpClient, private authService:AuthServiceService) { }
   listeSession():Observable<Session[]>{
@@ -70,14 +73,17 @@ getCoaches(): Observable<User[]> {
   let jwt=this.authService.getToken();
     jwt="Bearer "+jwt;
     let httpHeaders=new HttpHeaders({"Authorization":jwt});
-  return this.http.get<User[]>(`${this.baseUrl}/coaches`, { headers: this.getHeaders() });
+  return this.http.get<User[]>(`${this.apiUrl}/getCoach`, { headers: this.getHeaders() });
 }
 
 getPlayers(): Observable<Player[]> {
   let jwt=this.authService.getToken();
     jwt="Bearer "+jwt;
     let httpHeaders=new HttpHeaders({"Authorization":jwt});
-  return this.http.get<Player[]>(`${this.baseUrl}/players`, { headers: this.getHeaders() });
+  return this.http.get<Player[]>(`${this.url}/getAll`, { headers: this.getHeaders() });
+}
+createScrims(scrimsData: any): Observable<any> {
+  return this.http.post(`${this.api}/add`, scrimsData, { headers: this.getHeaders() });
 }
 
 }

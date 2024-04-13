@@ -1,0 +1,30 @@
+.dialog-content {
+    padding: 20px;
+    color: #333;
+  }
+  
+  .success-message {
+    color: green; /* Use your theme color here */
+    font-weight: bold;
+  }
+  
+  .ok-button {
+    margin-top: 20px;
+  }
+  .animated-icon mat-icon {
+    transform: scale(0);
+    animation: pop-in 0.6s forwards ease-out;
+  }
+  
+  @keyframes pop-in {
+    0% {
+      transform: scale(0);
+    }
+    50% {
+      transform: scale(1.2);
+    }
+    100% {
+      transform: scale(1);
+    }
+  }
+    

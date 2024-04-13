@@ -9,6 +9,9 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { SessionService } from './session.service';
 import { Player } from '../player/player';
 import { User } from '../../authentication/model/login.model';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { SessionErrorDialogComponent } from './session-error-dialog/session-error-dialog.component';
+import { SessionSuccessDialogComponent } from './session-success-dialog/session-success-dialog.component';
 
 
 
@@ -16,15 +19,16 @@ import { User } from '../../authentication/model/login.model';
 
 @Component({
   templateUrl: './SessionTraining.component.html',
+  styleUrls:['./SessionTraining.component.scss']
 })
 export class AppSessionTrainingComponent implements AfterViewInit {
   session:Session[];
   titleSession!:string;
   allSession!:Session[];
   searchTerm!:string;
-  // coaches: User[] = [];
-  // players: Player[] = [];
-
+  coaches: User[] = [];
+  players: Player[] = [];
+  sessions: Session[] = [];
   
   @ViewChild(MatTable, { static: true }) table: MatTable<any> = Object.create(null);
   searchText: any;
@@ -35,9 +39,8 @@ export class AppSessionTrainingComponent implements AfterViewInit {
     'dateEnd',
     'objectifs',
     'feedbacksEntraineurs',
-    
+    'coachName',
     'playerName',
-    
     'action'
   ];
   
@@ -45,16 +48,41 @@ export class AppSessionTrainingComponent implements AfterViewInit {
   dataSource = new MatTableDataSource<Session>([]);
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator = Object.create(null);
 
-  constructor(public dialog: MatDialog, public datePipe: DatePipe,private sessionService:SessionService,
+  constructor(public dialog: MatDialog, public datePipe: DatePipe,private sessionService:SessionService,private snackBar: MatSnackBar,
     private changeDetectorRefs: ChangeDetectorRef,private router:Router, private activateRoute: ActivatedRoute) { }
 
   ngAfterViewInit(): void {
     this.dataSource.paginator = this.paginator;
     this.chargerSession();
-    // this.sessionService.getCoaches().subscribe(coaches => this.coaches = coaches);
-    // this.sessionService.getPlayers().subscribe(players => this.players = players);
-  
+    this.loadCoaches();
+    this.loadPlayers();
   }
+  // openAddSessionDialog(): void {
+  //   // Make sure coaches and players are loaded
+  //   this.loadCoaches();
+  //   this.loadPlayers();
+
+  //   // Delay opening the dialog to ensure data is loaded
+  //   setTimeout(() => {
+  //     this.openDialog('Add', { coaches: this.coaches, players: this.players });
+  //   }, 300);
+  // }
+  loadCoaches(): void {
+    this.sessionService.getCoaches().subscribe((data: User[]) => {
+      this.coaches = data;
+    }, error => {
+      console.error('Failed to load coaches', error);
+    });
+  }
+
+  loadPlayers(): void {
+    this.sessionService.getPlayers().subscribe((data: Player[]) => {
+      this.players = data;
+    }, error => {
+      console.error('Failed to load players', error);
+    });
+  }
+
 
   applyFilter(filterValue: string): void {
     this.dataSource.filter = filterValue.trim().toLowerCase();
@@ -62,6 +90,8 @@ export class AppSessionTrainingComponent implements AfterViewInit {
 
   openDialog(action: string, obj: any): void {
     obj.action = action;
+    obj.coaches = this.coaches; // Add coaches to the object
+    obj.players = this.players; // Add players to the object
     const dialogRef = this.dialog.open(AppSessionTrainingDialogContentComponent, {
       data: obj,
     });
@@ -78,17 +108,24 @@ export class AppSessionTrainingComponent implements AfterViewInit {
       }
     });
   }
+  addErrorSession(errorMessage: string): void {
+    this.dialog.open(SessionErrorDialogComponent, {
+      data: errorMessage,
+      width: '400px'
+    });
+  }
 
   chargerSession(): void {
     this.sessionService.listeSession().subscribe(sessions => {
       this.dataSource.data = sessions.map(session => ({
         ...session,
-        coachName: session.coach?.nameCoach || 'No Coach',
+        username: session.user.username || 'No Coach', // Assigning username instead of nameCoach
         playerNames: session.presencePlayer?.map(player => player.leagalefullname).join(', ') || 'No Players'
       }));
       this.table.renderRows();
     });
   }
+  
     
   
   deleteSession(session:Session){
@@ -141,40 +178,67 @@ export class AppSessionTrainingComponent implements AfterViewInit {
 // Inside your component class
 
 // Inside AppSessionTrainingComponent.component.ts
-addSession(sessionData: any): void {
-  // Convert dates to ISO strings (if not already done)
-  const dateStartISO = sessionData.dateStart instanceof Date ? sessionData.dateStart.toISOString() : new Date(sessionData.dateStart).toISOString();
-  const dateEndISO = sessionData.dateEnd instanceof Date ? sessionData.dateEnd.toISOString() : new Date(sessionData.dateEnd).toISOString();
-
-  // Ensure 'playerNames' and 'objectifs' are arrays
-  const playerNamesFormatted = Array.isArray(sessionData.playerNames) ? sessionData.playerNames : sessionData.playerNames.split(',').map((name: string) => name.trim());
-  const objectifsFormatted = Array.isArray(sessionData.objectifs) ? sessionData.objectifs : sessionData.objectifs.split(',').map((objective: string) => objective.trim());
-
-  // Construct the payload ensuring structure aligns with backend expectations
-  const payload = {
-    username: sessionData.username,  // Make sure this is correctly set from the dialog form
-    playerNames: playerNamesFormatted,  // Use the formatted array
-    sessionName: sessionData.sessionName,
-    dateStart: dateStartISO,
-    dateEnd: dateEndISO,
-    objectifs: objectifsFormatted,  // Use the formatted array
-    feedbacksEntraineurs: sessionData.feedbacksEntraineurs
-  };
-
-  console.log("Payload being sent to backend:", payload);
-
-  // Use the service to send the payload to the backend
-  this.sessionService.addSession(payload).subscribe({
-    next: (response) => {
-      console.log("Session added successfully", response);
-      this.chargerSession();  // Refresh the data grid or list
-    },
-    error: (error) => {
-      console.error("Error adding session", error);
-      alert('There was an error adding the session: ' + error.error);
-    }
-  });
+// Add this method to the class
+handleDialogClose(response: any) {
+  // Logic to check if the operation was successful
+  if (response && response.success) {
+    // Show success dialog only if response indicates success
+    this.dialog.open(AppAddSessionTrainingComponent, {
+      data: { message: "Session Successfully Added" }
+    });
+  }
 }
+
+// Revised addSession method
+  addSession(sessionData: any): void {
+    if (!this.isValidSession(sessionData)) {
+      // Show error dialog and stop further execution
+      this.addErrorSession("Invalid session data.");
+      return;
+    }
+
+    const payload = this.prepareSessionPayload(sessionData);
+    this.sessionService.addSession(payload).subscribe({
+      next: (response) => {
+        // Instead of AppAddSessionTrainingComponent, use SessionSuccessDialogComponent
+        this.dialog.open(SessionSuccessDialogComponent, {
+          width: '400px',
+          data: { message: "Session Successfully Added" }
+        });
+        this.chargerSession(); // Refresh the session list
+      },
+      error: (error) => {
+        console.error("Error adding session", error);
+        this.addErrorSession(`Error adding the session: ${error.error}`);
+      }
+    });
+  }
+
+
+  prepareSessionPayload(sessionData: any): any {
+    const dateStartISO = sessionData.dateStart instanceof Date ? sessionData.dateStart.toISOString() : new Date(sessionData.dateStart).toISOString();
+    const dateEndISO = sessionData.dateEnd instanceof Date ? sessionData.dateEnd.toISOString() : new Date(sessionData.dateEnd).toISOString();
+    const playerNamesFormatted = Array.isArray(sessionData.playerNames) ? sessionData.playerNames : sessionData.playerNames.split(',').map((name:string) => name.trim());
+    const objectifsFormatted = Array.isArray(sessionData.objectifs) ? sessionData.objectifs : sessionData.objectifs.split(',').map((objective: string) => objective.trim());
+
+    return {
+      username: sessionData.username,
+      playerNames: playerNamesFormatted,
+      sessionName: sessionData.sessionName,
+      dateStart: dateStartISO,
+      dateEnd: dateEndISO,
+      objectifs: objectifsFormatted,
+      feedbacksEntraineurs: sessionData.feedbacksEntraineurs
+    };
+  }
+
+isValidSession(sessionData: any): boolean {
+  // Add validation logic here based on your application's needs
+  return sessionData.sessionName && sessionData.dateStart && sessionData.dateEnd;
+}
+
+
+
 
  
   
@@ -248,6 +312,8 @@ onkeyUp(filterText:string){
 })
 // tslint:disable-next-line: component-class-suffix
 export class AppSessionTrainingDialogContentComponent {
+  coaches: User[];
+  players: Player[];
   action: string;
   // tslint:disable-next-line - Disables all
   local_data: any;
@@ -258,8 +324,9 @@ export class AppSessionTrainingDialogContentComponent {
     public datePipe: DatePipe,
     public dialogRef: MatDialogRef<AppSessionTrainingDialogContentComponent>,
     // @Optional() is used to prevent error if no data is passed
-    @Optional() @Inject(MAT_DIALOG_DATA) public data: Session,
+    @Optional() @Inject(MAT_DIALOG_DATA) public data: any,
   ) {
+   
     this.local_data = { ...data };
     this.action = this.local_data.action;
     if (this.local_data.DateOfJoining !== undefined) {
@@ -268,9 +335,9 @@ export class AppSessionTrainingDialogContentComponent {
         'yyyy-MM-dd',
       );
     }
-    if (this.local_data.imagePath === undefined) {
-      this.local_data.imagePath = 'assets/images/profile/user-1.jpg';
-    }
+    // if (this.local_data.imagePath === undefined) {
+    //   this.local_data.imagePath = 'assets/images/profile/user-1.jpg';
+    // }
   }
 
   doAction(): void {
@@ -280,23 +347,23 @@ export class AppSessionTrainingDialogContentComponent {
     this.dialogRef.close({ event: 'Cancel' });
   }
 
-  selectFile(event: any): void {
-    if (!event.target.files[0] || event.target.files[0].length === 0) {
-      // this.msg = 'You must select an image';
-      return;
-    }
-    const mimeType = event.target.files[0].type;
-    if (mimeType.match(/image\/*/) == null) {
-      // this.msg = "Only images are supported";
-      return;
-    }
-    // tslint:disable-next-line - Disables all
-    const reader = new FileReader();
-    reader.readAsDataURL(event.target.files[0]);
-    // tslint:disable-next-line - Disables all
-    reader.onload = (_event) => {
-      // tslint:disable-next-line - Disables all
-      this.local_data.imagePath = reader.result;
-    };
-  }
+  // selectFile(event: any): void {
+  //   if (!event.target.files[0] || event.target.files[0].length === 0) {
+  //     // this.msg = 'You must select an image';
+  //     return;
+  //   }
+  //   const mimeType = event.target.files[0].type;
+  //   if (mimeType.match(/image\/*/) == null) {
+  //     // this.msg = "Only images are supported";
+  //     return;
+  //   }
+  //   // tslint:disable-next-line - Disables all
+  //   const reader = new FileReader();
+  //   reader.readAsDataURL(event.target.files[0]);
+  //   // tslint:disable-next-line - Disables all
+  //   reader.onload = (_event) => {
+  //     // tslint:disable-next-line - Disables all
+  //     this.local_data.imagePath = reader.result;
+  //   };
+  // }
 }
