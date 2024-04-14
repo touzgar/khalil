@@ -1,5 +1,6 @@
 <!-- add-user-popup.component.html -->
 <div class="popup-container">
+  <div *ngIf="!loading; else loadingTemplate">
   <div class="popup-header">
     <span class="popup-title">Add New User</span>
     <div style="display: flex; align-items: center;">
@@ -36,6 +37,11 @@
 <img *ngIf="imagePath" [src]="imagePath" class="img-fluid rounded-start" alt="Uploaded Image Preview">
 
       </div> -->
+      <!-- <div *ngIf="loading" class="loading-overlay">
+        <mat-spinner></mat-spinner>
+        <mat-progress-bar mode="determinate" value="{{progress}}"></mat-progress-bar>
+      </div>
+       -->
       <div class="button-group">
         <button type="submit" class="btn btn-primary">Save</button>
         <button type="button" class="btn btn-secondary" (click)="onCancel()">Cancel</button>
@@ -43,4 +49,11 @@
       
     </form>
   </div>
+  <ng-template #loadingTemplate>
+    <div class="loading-overlay">
+      <mat-spinner></mat-spinner>
+      <div class="loading-message">Please wait...</div>
+    </div>
+  </ng-template>
   
+</div>

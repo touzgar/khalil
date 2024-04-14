@@ -46,7 +46,14 @@ image:Image[];
       'Authorization': `Bearer ${token}`
     });
   
-    return this.http.post<User>(`${this.apiURL}/addUserss`, user, { headers: headers });
+    return this.http.post<User>(`${this.apiURL}/addUserss`, user, { headers: headers })
+    .pipe(
+      catchError(error => {
+        // Convert server error to user-friendly message if needed
+        const message = error.error.message || "An unexpected error occurred.";
+        return throwError(() => new Error(message));
+      })
+    );
   }
   
 

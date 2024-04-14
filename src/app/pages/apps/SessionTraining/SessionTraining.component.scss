@@ -9,6 +9,10 @@
   .search-input {
     width: 200px; // Reduce width of the search input
   }
+  .add-buttons {
+    display: flex; /* Ensures buttons are side-by-side */
+    gap: 8px; /* Adds space between the two buttons */
+  }
   
   .card-container {
     display: flex;

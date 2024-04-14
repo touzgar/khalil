@@ -1,0 +1,99 @@
+<h2 mat-dialog-title>{{ data.action }} Scrims</h2>
+<mat-dialog-content class="mat-typography" style="max-width: 600px">
+  <form #scrimsForm="ngForm">
+    <div class="row">
+      <!-- Session Name -->
+      <div class="col-lg-6">
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>Session Name</mat-label>
+          <input matInput [(ngModel)]="data.sessionName" name="sessionName" required>
+        </mat-form-field>
+      </div>
+
+      <!-- Date Start -->
+      <div class="col-lg-6">
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>Date Start</mat-label>
+          <input type="date" matInput [(ngModel)]="data.dateStart" name="dateStart" required>
+        </mat-form-field>
+      </div>
+
+      <!-- Date End -->
+      <div class="col-lg-6">
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>Date End</mat-label>
+          <input type="date" matInput [(ngModel)]="data.dateEnd" name="dateEnd" required>
+        </mat-form-field>
+      </div>
+
+      <!-- Feedbacks Entraineurs -->
+      <div class="col-lg-6">
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>Feedbacks Entraineurs</mat-label>
+          <input matInput [(ngModel)]="data.feedbacksEntraineurs" name="feedbacksEntraineurs" required>
+        </mat-form-field>
+      </div>
+
+      <!-- Coach Username -->
+      <div class="col-lg-6">
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>Coach Username</mat-label>
+          <mat-select [(ngModel)]="data.username" name="username">
+            <mat-option *ngFor="let coach of coaches" [value]="coach.username">
+              {{ coach.username }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <!-- Player Names -->
+      <div class="col-lg-6">
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>Player Names</mat-label>
+          <mat-select multiple [(ngModel)]="data.playerNames" name="playerNames">
+            <mat-option *ngFor="let player of players" [value]="player.leagalefullname">
+              {{ player.leagalefullname }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <!-- Description -->
+      <div class="col-lg-12">
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>Description</mat-label>
+          <textarea matInput [(ngModel)]="data.description" name="description" required></textarea>
+        </mat-form-field>
+      </div>
+
+      <!-- Level (Niveau) -->
+      <div class="col-lg-6">
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>Level</mat-label>
+          <input matInput [(ngModel)]="data.niveau" name="niveau" required>
+        </mat-form-field>
+      </div>
+
+      <!-- Mode -->
+      <div class="col-lg-6">
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>Mode</mat-label>
+          <input matInput [(ngModel)]="data.mode" name="mode" required>
+        </mat-form-field>
+      </div>
+
+      <!-- Special Objectives -->
+      <div class="col-lg-12">
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>Special Objectives</mat-label>
+          <textarea matInput [(ngModel)]="data.specialObjectives" name="specialObjectives" required></textarea>
+        </mat-form-field>
+      </div>
+    </div>
+
+    <div mat-dialog-actions>
+      <button mat-flat-button color="primary" (click)="doAction()" [disabled]="!scrimsForm.valid">{{ data.action }}</button>
+      <button mat-stroked-button color="warn" (click)="closeDialog()">Cancel</button>
+    </div>
+  </form>
+</mat-dialog-content>

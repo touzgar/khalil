@@ -12,6 +12,8 @@ import { User } from '../../authentication/model/login.model';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { SessionErrorDialogComponent } from './session-error-dialog/session-error-dialog.component';
 import { SessionSuccessDialogComponent } from './session-success-dialog/session-success-dialog.component';
+import { Scrims } from '../Scrims/Scrims.model';
+import { ScrimsDialogComponent } from './scrims-dialog/scrims-dialog.component';
 
 
 
@@ -108,6 +110,24 @@ export class AppSessionTrainingComponent implements AfterViewInit {
       }
     });
   }
+  openScrimsDialog(action: string, data: any): void {
+    const dialogRef = this.dialog.open(ScrimsDialogComponent, {
+      width: '600px',
+      data: { action: action, ...data }
+    });
+  
+    dialogRef.afterClosed().subscribe(result => {
+      if (result.event === 'Submit') {
+        console.log('Data submitted:', result.data);
+        // Additional logic to handle submitted data
+      } else if (result.event === 'Cancel') {
+        console.log('Dialog was cancelled');
+      }
+    });
+  }
+  
+  // Add, Update, Delete methods to handle the response
+  
   addErrorSession(errorMessage: string): void {
     this.dialog.open(SessionErrorDialogComponent, {
       data: errorMessage,
@@ -236,6 +256,50 @@ isValidSession(sessionData: any): boolean {
   // Add validation logic here based on your application's needs
   return sessionData.sessionName && sessionData.dateStart && sessionData.dateEnd;
 }
+
+
+// Inside your component.ts file
+
+// Method to call when the form is submitted
+submitScrimsForm(formValues: any) {
+  // Convert your form values to the Scrims model if necessary
+  const scrimsData = this.mapFormValuesToScrimsModel(formValues);
+
+  this.sessionService.createScrims(scrimsData).subscribe({
+    next: (response) => {
+      console.log('Scrims created successfully', response);
+      // Handle successful creation (e.g., navigate to a different page or show a message)
+    },
+    error: (error) => {
+      console.error('Error creating scrims', error);
+      // Handle errors here (e.g., show an error message)
+    }
+  });
+}
+
+// Helper method to map form values to your Scrims model
+private mapFormValuesToScrimsModel(formValues: any): Scrims {
+  // Create a new Scrims object and populate it with form values
+  // Ensure the structure matches what your backend expects
+  const scrimsData = new Scrims();
+  scrimsData.sessionName = formValues.sessionName;
+  scrimsData.dateStart = formValues.dateStart;
+  scrimsData.dateEnd = formValues.dateEnd;
+  scrimsData.feedbacksEntraineurs = formValues.feedbacksEntraineurs;
+  scrimsData.objectivesNames = formValues.objectivesNames;
+  scrimsData.username = formValues.username;
+  scrimsData.playerNames = formValues.playerNames;
+  scrimsData.specialObjectives = formValues.specialObjectives;
+  scrimsData.niveau = formValues.niveau;
+  scrimsData.description = formValues.description;
+  scrimsData.mode = formValues.mode;
+  
+  // ... populate the rest of the properties
+  return scrimsData;
+}
+
+
+
 
 
 

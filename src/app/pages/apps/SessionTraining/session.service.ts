@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { AuthServiceService } from '../../authentication/auth-service.service';
 import { User } from '../../authentication/model/login.model';
 import { Player } from '../player/player';
+import { Scrims } from '../Scrims/Scrims.model';
 import { Session } from './session.model';
 
 
@@ -83,7 +84,7 @@ getPlayers(): Observable<Player[]> {
   return this.http.get<Player[]>(`${this.url}/getAll`, { headers: this.getHeaders() });
 }
 createScrims(scrimsData: any): Observable<any> {
-  return this.http.post(`${this.api}/add`, scrimsData, { headers: this.getHeaders() });
+  return this.http.post<any>(`${this.api}/add`, scrimsData, { headers: this.getHeaders() });
 }
 
 }

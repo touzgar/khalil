@@ -125,6 +125,8 @@ import { AddUserManagerPopupComponent } from './manager/add-user-manager-popup/a
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { SessionErrorDialogComponent } from './SessionTraining/session-error-dialog/session-error-dialog.component';
 import { SessionSuccessDialogComponent } from './SessionTraining/session-success-dialog/session-success-dialog.component';
+import { ErrorDialogComponent } from './manager/error-dialog/error-dialog.component';
+import { ScrimsDialogComponent } from './SessionTraining/scrims-dialog/scrims-dialog.component';
 
 
 
@@ -243,8 +245,12 @@ AppCoachDialogContentComponent,
     EditUserDialogComponent,
     AddUserManagerPopupComponent,
     SessionErrorDialogComponent,
-    SessionSuccessDialogComponent
+    SessionSuccessDialogComponent,
+    ErrorDialogComponent,
+    ScrimsDialogComponent
+    
      ],
+     
   providers: [DatePipe,{ provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true }],
 
 })

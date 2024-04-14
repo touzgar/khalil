@@ -6,9 +6,16 @@
     <mat-icon matSuffix>search</mat-icon>
   </mat-form-field>
 
-  <button mat-raised-button color="primary" (click)="openDialog('Add', {})">
-    Add SessionTraining
-  </button>
+  <div class="add-buttons">
+    <button mat-raised-button color="primary" (click)="openDialog('Add', {})">
+      Add SessionTraining
+    </button>
+    
+    <button mat-raised-button color="primary" (click)=" openScrimsDialog('Add',{})">
+      Add Scrims
+    </button>
+  </div>
+ 
 </div>
 
 <!-- Container for cards -->
@@ -22,7 +29,7 @@
       <p>Objectives: {{ session.objectifs }}</p>
       <p>Coach: {{ session.username }}</p>
       <p>Players: {{ session.playerNames }}</p>
-
+      
       <!-- Actions are also hidden initially and only shown on hover -->
       <div class="d-flex justify-content-end">
         <a (click)="openDialog('Update', session)" class="m-r-10 cursor-pointer">
