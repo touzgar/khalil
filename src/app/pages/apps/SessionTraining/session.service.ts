@@ -1,10 +1,11 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { AuthServiceService } from '../../authentication/auth-service.service';
 import { User } from '../../authentication/model/login.model';
 import { Player } from '../player/player';
 import { Scrims } from '../Scrims/Scrims.model';
+import { Team } from '../team/team.model';
 import { Session } from './session.model';
 
 
@@ -19,6 +20,7 @@ baseUrl = 'http://localhost:8089/users/api/session';
 apiUrl='http://localhost:8089/users'
 url='http://localhost:8089/users/api/player'
 api='http://localhost:8089/users/api/scrims'
+team='http://localhost:8089/users/api/team'
 
   constructor(private http:HttpClient, private authService:AuthServiceService) { }
   listeSession():Observable<Session[]>{
@@ -86,5 +88,34 @@ getPlayers(): Observable<Player[]> {
 createScrims(scrimsData: any): Observable<any> {
   return this.http.post<any>(`${this.api}/add`, scrimsData, { headers: this.getHeaders() });
 }
+listeScrims(): Observable<Scrims[]> {
+  let jwt = this.authService.getToken();
+  jwt = "Bearer " + jwt;
+  let httpHeaders = new HttpHeaders({"Authorization": jwt});
+  return this.http.get<Scrims[]>(`${this.api}/getAll`, {headers: httpHeaders});
+}
+getTeams(): Observable<Team[]> {
+  let jwt=this.authService.getToken();
+    jwt="Bearer "+jwt;
+    let httpHeaders=new HttpHeaders({"Authorization":jwt});
+  return this.http.get<Team[]>(`${this.team}/getAll`, { headers: this.getHeaders() });
+}
+getPlayersByTeamNames(teamNames: string[]): Observable<Player[]> {
+  let jwt = this.authService.getToken();
+  let headers = new HttpHeaders({
+    'Authorization': `Bearer ${jwt}`,
+    'Content-Type': 'application/json'
+  });
+
+  // Use HTTPParams for query parameters
+  const params = new HttpParams({
+    fromObject: { teamNames: teamNames } // This will correctly format `teamNames` as `teamNames[]=team1&teamNames[]=team2`, etc.
+  });
+
+  return this.http.get<Player[]>(`${this.team}/getPlayersByTeamNames`, { headers, params });
+}
+
+
+
 
 }

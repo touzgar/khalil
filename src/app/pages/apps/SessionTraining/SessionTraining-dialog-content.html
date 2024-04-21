@@ -84,9 +84,21 @@
   </mat-form-field>
 </div>
 <!-- Field for playerNames -->
+<!-- Field for teamName -->
 <div class="col-lg-4">
   <mat-form-field appearance="outline" class="w-100">
-    <mat-select multiple placeholder="Player Names" name="playerNames" [(ngModel)]="local_data.playerNames">
+    <mat-select placeholder="Team Names" name="teamName" [(ngModel)]="local_data.teamName" (selectionChange)="onTeamChange($event.value)">
+      <mat-option *ngFor="let team of local_data.teams" [value]="team.teamName">
+        {{ team.teamName }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+</div>
+
+<!-- Field for playerNames -->
+<div class="col-lg-4">
+  <mat-form-field appearance="outline" class="w-100">
+    <mat-select multiple placeholder="Player Names" name="playerNames" [(ngModel)]="local_data.playerNames" [disabled]="!local_data.teamName">
       <mat-option *ngFor="let player of local_data.players" [value]="player.leagalefullname">
         {{ player.leagalefullname }}
       </mat-option>

@@ -127,15 +127,23 @@ import { SessionErrorDialogComponent } from './SessionTraining/session-error-dia
 import { SessionSuccessDialogComponent } from './SessionTraining/session-success-dialog/session-success-dialog.component';
 import { ErrorDialogComponent } from './manager/error-dialog/error-dialog.component';
 import { ScrimsDialogComponent } from './SessionTraining/scrims-dialog/scrims-dialog.component';
+import { PlayerSelectDialogComponent } from './SessionTraining/player-select-dialog/player-select-dialog.component';
+// import { AddDepenseDialogComponent } from './Scrims/add-depense-dialog/add-depense-dialog.component';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { AddDepenseDialogComponent } from './Scrims/add-depense-dialog/add-depense-dialog.component';
+import { AddRevenusDialogComponentComponent } from './Scrims/add-revenus-dialog-component/add-revenus-dialog-component.component';
 
 
 
 @NgModule({
   imports: [
+    // MatFormFieldModule,
+    // MatInputModule,
+    // MatDatepickerModule,
+    // MatNativeDateModule,
     MatDialogModule,
     MatButtonModule,
- 
-    MatSnackBarModule,
+     MatSnackBarModule,
     MatTableModule,
     MatPaginatorModule,
     MatDialogModule,
@@ -247,7 +255,10 @@ AppCoachDialogContentComponent,
     SessionErrorDialogComponent,
     SessionSuccessDialogComponent,
     ErrorDialogComponent,
-    ScrimsDialogComponent
+    ScrimsDialogComponent,
+    PlayerSelectDialogComponent,
+      AddDepenseDialogComponent ,
+      AddRevenusDialogComponentComponent
     
      ],
      

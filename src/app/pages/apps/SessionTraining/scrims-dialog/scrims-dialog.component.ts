@@ -60,11 +60,13 @@ export class ScrimsDialogComponent implements OnInit {
             console.log('Scrims created successfully', response);
             this.dialogRef.close({ event: 'Submit', data: response });
         },
+        
         error: (error) => {
             console.error('Failed to create scrims', error);
             this.dialogRef.close({ event: 'Failed', error: error });
         }
     });
+    
 }
 
 

@@ -14,6 +14,9 @@ import { SessionErrorDialogComponent } from './session-error-dialog/session-erro
 import { SessionSuccessDialogComponent } from './session-success-dialog/session-success-dialog.component';
 import { Scrims } from '../Scrims/Scrims.model';
 import { ScrimsDialogComponent } from './scrims-dialog/scrims-dialog.component';
+import { Team } from '../team/team.model';
+import { CalendarEvent } from 'angular-calendar';
+import { add } from 'date-fns';
 
 
 
@@ -31,8 +34,13 @@ export class AppSessionTrainingComponent implements AfterViewInit {
   coaches: User[] = [];
   players: Player[] = [];
   sessions: Session[] = [];
-  
-  @ViewChild(MatTable, { static: true }) table: MatTable<any> = Object.create(null);
+  teams:Team[];
+  view: 'month' | 'week' | 'day' = 'month'; // default to month view
+  viewDate: Date = new Date();
+  event = [];
+  // viewDate: Date = new Date(); // Today's date for calendar
+   events: CalendarEvent[] = []; // Events to be shown on the calendar
+  @ViewChild(MatTable, { static: false }) table: MatTable<any> = Object.create(null);
   searchText: any;
   displayedColumns: string[] = [
     '#',
@@ -49,6 +57,8 @@ export class AppSessionTrainingComponent implements AfterViewInit {
 
   dataSource = new MatTableDataSource<Session>([]);
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator = Object.create(null);
+  activeDayIsOpen: boolean;
+  displaySessionDetails: any = null; // Holds details for the session to be displayed
 
   constructor(public dialog: MatDialog, public datePipe: DatePipe,private sessionService:SessionService,private snackBar: MatSnackBar,
     private changeDetectorRefs: ChangeDetectorRef,private router:Router, private activateRoute: ActivatedRoute) { }
@@ -58,22 +68,86 @@ export class AppSessionTrainingComponent implements AfterViewInit {
     this.chargerSession();
     this.loadCoaches();
     this.loadPlayers();
+    this.loadTeams();
+    this.loadSessions();
   }
-  // openAddSessionDialog(): void {
-  //   // Make sure coaches and players are loaded
-  //   this.loadCoaches();
-  //   this.loadPlayers();
 
-  //   // Delay opening the dialog to ensure data is loaded
-  //   setTimeout(() => {
-  //     this.openDialog('Add', { coaches: this.coaches, players: this.players });
-  //   }, 300);
-  // }
+  previousClick(): void {
+    const amount = this.view === 'month' ? { months: -1 } : this.view === 'week' ? { weeks: -1 } : { days: -1 };
+    this.viewDate = add(this.viewDate, amount);
+  }
+
+  // Navigate to today's date
+  todayClick(): void {
+    this.viewDate = new Date();
+  }
+
+  // Navigate to the next view based on the current view
+  nextClick(): void {
+    const amount = this.view === 'month' ? { months: 1 } : this.view === 'week' ? { weeks: 1 } : { days: 1 };
+    this.viewDate = add(this.viewDate, amount);
+  }
+  
+  loadSessions() {
+    this.sessionService.listeSession().subscribe(sessions => {
+      this.events = sessions.map(session => ({
+        title: session.sessionName,  // shown on the calendar
+        start: new Date(session.dateStart),
+        end: new Date(session.dateEnd),
+        color: {
+          primary: '#ad2121', // example color
+          secondary: '#FAE3E3'
+        },
+        meta: {  // Store all session details here
+          sessionName: session.sessionName,
+          dateStart: session.dateStart,
+          dateEnd: session.dateEnd,
+          objectifs: session.objectifs,
+          feedbacksEntraineurs: session.feedbacksEntraineurs,
+          coachName: session.user.username,
+          playerName: session.presencePlayer?.map(player => player.leagalefullname).join(', ') || 'No Players',
+          // Add other necessary session attributes here
+        }
+      }));
+    });
+  }
+  
+  
+  dayClicked({ date, events }: { date: Date; events: CalendarEvent[] }): void {
+    if (events.length > 0) {
+      this.activeDayIsOpen = !this.activeDayIsOpen; // Toggle day view
+      this.viewDate = date; // Update view date to clicked date
+      this.displaySessionDetails = events[0].meta; // Take the first event's meta data for display
+    } else {
+      this.activeDayIsOpen = false;
+      this.displaySessionDetails = null; // Clear any previously shown details
+    }
+  } 
+  
+  
+  eventClicked(event: CalendarEvent): void {
+    // Open a dialog to display session details
+    this.openDialog('Update', event.meta);  // passing all session data
+  }
+  
+  
+  
+  
+
+
+
   loadCoaches(): void {
     this.sessionService.getCoaches().subscribe((data: User[]) => {
       this.coaches = data;
     }, error => {
       console.error('Failed to load coaches', error);
+    });
+  }
+  loadTeams(): void {
+    this.sessionService.getTeams().subscribe((data: Team[]) => {
+      this.teams = data;
+    }, error => {
+      console.error('Failed to load teams', error);
     });
   }
 
@@ -93,7 +167,8 @@ export class AppSessionTrainingComponent implements AfterViewInit {
   openDialog(action: string, obj: any): void {
     obj.action = action;
     obj.coaches = this.coaches; // Add coaches to the object
-    obj.players = this.players; // Add players to the object
+    obj.players = this.players;
+    obj.teams=this.teams; // Add players to the object
     const dialogRef = this.dialog.open(AppSessionTrainingDialogContentComponent, {
       data: obj,
     });
@@ -114,6 +189,7 @@ export class AppSessionTrainingComponent implements AfterViewInit {
     const dialogRef = this.dialog.open(ScrimsDialogComponent, {
       width: '600px',
       data: { action: action, ...data }
+      
     });
   
     dialogRef.afterClosed().subscribe(result => {
@@ -124,6 +200,7 @@ export class AppSessionTrainingComponent implements AfterViewInit {
         console.log('Dialog was cancelled');
       }
     });
+    // this.chargerSession(); 
   }
   
   // Add, Update, Delete methods to handle the response
@@ -139,10 +216,10 @@ export class AppSessionTrainingComponent implements AfterViewInit {
     this.sessionService.listeSession().subscribe(sessions => {
       this.dataSource.data = sessions.map(session => ({
         ...session,
-        username: session.user.username || 'No Coach', // Assigning username instead of nameCoach
+        username: session.user.username || 'No Coach',
         playerNames: session.presencePlayer?.map(player => player.leagalefullname).join(', ') || 'No Players'
       }));
-      this.table.renderRows();
+     
     });
   }
   
@@ -355,7 +432,7 @@ onkeyUp(filterText:string){
   addRowData(row_obj: Session): void {
     
     this.dialog.open(AppAddSessionTrainingComponent);
-    this.table.renderRows();
+    
   }
 
   // tslint:disable-next-line - Disables all
@@ -378,6 +455,7 @@ onkeyUp(filterText:string){
 export class AppSessionTrainingDialogContentComponent {
   coaches: User[];
   players: Player[];
+  
   action: string;
   // tslint:disable-next-line - Disables all
   local_data: any;
@@ -385,10 +463,12 @@ export class AppSessionTrainingDialogContentComponent {
   joiningDate: any = '';
 
   constructor(
+    private sessionService:SessionService,
     public datePipe: DatePipe,
     public dialogRef: MatDialogRef<AppSessionTrainingDialogContentComponent>,
     // @Optional() is used to prevent error if no data is passed
     @Optional() @Inject(MAT_DIALOG_DATA) public data: any,
+    private cdr: ChangeDetectorRef
   ) {
    
     this.local_data = { ...data };
@@ -404,6 +484,27 @@ export class AppSessionTrainingDialogContentComponent {
     // }
   }
 
+  onTeamChange(teamName: string): void {
+    console.log("Selected teamName:", teamName);  // Log for debugging
+    if (teamName) {
+      this.sessionService.getPlayersByTeamNames([teamName]).subscribe({
+        next: (players) => {
+          console.log("Players loaded:", players);
+          this.local_data.players = players;  // Update the local data with the loaded players
+          this.cdr.detectChanges();  // Trigger change detection to update the UI
+        },
+        error: (error) => {
+          console.error('Error loading players:', error);
+          this.local_data.players = [];  // Clear players if there is an error
+        }
+      });
+    } else {
+      this.local_data.players = [];  // Clear players if no team name is selected
+    }
+}
+  
+  
+  
   doAction(): void {
     this.dialogRef.close({ event: this.action, data: this.local_data });
   }

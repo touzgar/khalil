@@ -3,24 +3,25 @@ import { Role } from "../../authentication/model/Role.model";
 import { Coach } from "../coach/coach.model";
 import { Player } from "../player/player";
 import { Scrims } from "../Scrims/Scrims.model";
+import { Team } from "../team/team.model";
 
 export class Session {
-    idSession: number;
+  idSession: number;
   sessionName: string;
-  dateStart: string; // Changed to string type if you are not converting dates from JSON
-  dateEnd: string;   // Changed to string type if you are not converting dates from JSON
+  dateStart: string;
+  dateEnd: string;
   objectifs: string[];
   feedbacksEntraineurs: string;
   presencePlayer: Player[];
   coach: Coach;
   coachName: string;
   playerNames: string;
-  user:User;
-  role:Role;
-  username:string;
-  player:Player;
-  legalfullName:string;
-  scrims:Scrims;
-    // Other properties as needed
-  }
-  
+  user: User;
+  role: Role;
+  username: string;
+  player: Player;
+  legalfullName: string;
+  scrims?: Scrims;
+  team:Team;
+  teamName:string;
+}

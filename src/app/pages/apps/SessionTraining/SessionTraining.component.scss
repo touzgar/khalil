@@ -55,4 +55,38 @@
       }
     }
   }
-  
+ /* Calendar Header */
+/* Navbar Styles */
+.navbar-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #5d87ff; /* Adjust color as needed */
+  padding: 10px;
+  color: white;
+}
+
+.date-display {
+  font-size: 1.5rem;
+}
+
+.nav-buttons button.nav-item {
+  color: white;
+  font-weight: bold;
+  margin: 0 10px;
+}
+
+.nav-buttons button.nav-item.active {
+  text-decoration: underline;
+}
+
+.action-buttons .icon-button {
+  color: white;
+}
+
+.action-buttons .icon-button mat-icon {
+  /* Optional: Adjust icon size if needed */
+  font-size: 24px;
+  width: 24px;
+  height: 24px;
+}
