@@ -10,9 +10,9 @@
             matInput
             required
             id="competence"
-            name="competence"
-            [(ngModel)]="local_data.competence"
-            placeholder="competence"
+            name="materielName"
+            [(ngModel)]="local_data.materielName"
+            placeholder="materielName"
           />
         </mat-form-field>
       </div>
@@ -22,58 +22,41 @@
             type="text"
             matInput
             required
-            id="historiquePerformence"
-            name="historiquePerformence"
-            [(ngModel)]="local_data.historiquePerformence"
-            placeholder="historiquePerformence"
+            id="type"
+            name="type"
+            [(ngModel)]="local_data.type"
+            placeholder="type"
           />
         </mat-form-field>
       </div>
       
       
-<div *ngIf="action === 'Add'" class="col-lg-6">
-  <mat-form-field appearance="outline" class="w-100">
-    <input
-      type="text"
-      matInput
-      required
-      id="leagalefullname"
-      name="leagalefullname"
-      [(ngModel)]="local_data.leagalefullname"
-      placeholder="leagalefullname"
-    />
-  </mat-form-field>
-</div>
 
       <div class="col-lg-6">
         <mat-form-field appearance="outline" class="w-100">
           <input
-            type="number
+            type="text
             "
             matInput
             required
-            id="kdRiot"
-            name="kdRiot"
-            [(ngModel)]="local_data.kdRiot"
-            placeholder="kdRiot"
+            id="status"
+            name="status"
+            [(ngModel)]="local_data.status"
+            placeholder="status"
           />
         </mat-form-field>
       </div>
-      <div class="col-lg-4">
+      <div class="col-lg-6">
         <mat-form-field appearance="outline" class="w-100">
-          <input
-            type="text"
-            placeholder="winPorsontage"
-            matInput
-            required
-            id="winPorsontage"
-            name="winPorsontage"
-            [(ngModel)]="local_data.winPorsontage"
-          />
+          <mat-select placeholder="Team Name" name="teamName" [(ngModel)]="local_data.teamName">
+            <mat-option *ngFor="let team of local_data.team" [value]="team.teamName">
+              {{ team.teamName }}
+            </mat-option>
+          </mat-select>
         </mat-form-field>
       </div>
-     
     </div>
+ 
     <button
       mat-flat-button
       (click)="doAction()"

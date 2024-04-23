@@ -1,0 +1,28 @@
+<h2 mat-dialog-title>Add Installation</h2>
+<div mat-dialog-content>
+  <form #depenseForm="ngForm">
+    <mat-form-field>
+      <input matInput placeholder="Installation Name" name="installationName" [(ngModel)]="data.installationName" required>
+    </mat-form-field>
+    <mat-form-field>
+      <input matInput type="text" placeholder="Type" name="type" [(ngModel)]="data.type" required>
+    </mat-form-field>
+    <mat-form-field>
+      <input matInput type="text" placeholder="Disponibilité" name="disponibilite" [(ngModel)]="data.disponibilite" required>
+    </mat-form-field>
+    <mat-form-field>
+      <input type="number" matInput placeholder="Capacité" name="capacite" [(ngModel)]="data.capacite" required>    </mat-form-field>
+    <mat-form-field>
+      <mat-select placeholder="Team Name" name="teamName" [(ngModel)]="data.teamName">
+        <mat-option *ngFor="let team of data.team" [value]="team.teamName">
+          {{ team.teamName }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+  </form>
+</div>
+<div mat-dialog-actions>
+  <button mat-button (click)="onCancelClick()">Cancel</button>
+  <button mat-button color="primary" (click)="onSaveClick(depenseForm.value)" [disabled]="!depenseForm.valid">Save</button>
+
+</div>

@@ -1,96 +1,100 @@
-<mat-card class="cardWithShadow">
-  <mat-card-content class="p-24">
-    <div class="row justify-content-between">
-      <div class="col-lg-4">
-        <mat-form-field appearance="outline" class="w-100 hide-hint">
+<div class="search-row">
+  <mat-form-field appearan="outline" class="search-input">
+    <mat-label>Search</mat-label>
+    
+        
           <input
             matInput
             placeholder="Search Compitence"
             (keyup)="applyFilter($any($event.target).value)"
           />
+                            
           <mat-icon matSuffix>
             <i-tabler name="search" class="icon-20"></i-tabler>
           </mat-icon>
         </mat-form-field>
-      </div>
-      <div class="col-lg-4 d-flex align-items-center justify-content-end">
-        <button mat-flat-button (click)="openDialog('Add', {})" color="primary">
-          Add compitence
-        </button>
-      </div>
-    </div>
-  </mat-card-content>
-</mat-card>
-<mat-card class="cardWithShadow">
-  <mat-card-content class="p-24">
-    <div class="table-responsive">
-      <table mat-table [dataSource]="dataSource" class="w-100">
-        <ng-container matColumnDef="#">
-          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">#</th>
-          <td mat-cell *matCellDef="let element">{{ element.idCompetence }}</td>
-        </ng-container>
-
+      
+         
+      <div class="add-buttons" >
+  <button mat-flat-button style="margin-right: 10px;" (click)="openDialog('Add', {})" color="accent">
+    Add Materiel
+  </button>
+  <button mat-flat-button style="margin-right: 10px;" (click)="openAddInstallationDialog('Add',{})" color="accent">
+    Add Installation
+  </button>
+  <button mat-flat-button (click)="openAddLogicielDialog('Add',{})" color="accent">
+    Add Logiciel
+  </button>
+</div>
+</div>
         
-
-        <ng-container matColumnDef="competence">
-          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">
-            competence
-          </th>
-          <td mat-cell *matCellDef="let element" class="f-s-14">{{ element.competence }}</td>
-        </ng-container>
-
-        <ng-container matColumnDef="historiquePerformence">
-          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">
-            historiquePerformence
-          </th>
-          <td mat-cell *matCellDef="let element" class="f-s-14">
-            {{ element.historiquePerformence }}
-          </td>
-        </ng-container>
-
-        <ng-container matColumnDef="kdRiot">
-          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">
-            kdRiot
-          </th>
-          <td mat-cell *matCellDef="let element" class="f-s-14">
-            {{ element.kdRiot }}
-          </td>
-        </ng-container>
-
-        <ng-container matColumnDef="winPorsontage">
-          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">
-            winPorsontage
-          </th>
-          <td mat-cell *matCellDef="let element" class="f-s-14">
-            {{ element.winPorsontage }}
-          </td>
-        </ng-container>
-        <ng-container matColumnDef="action">
-          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">
-            Action
-          </th>
-          <td mat-cell *matCellDef="let element" class="action-link">
-            <a
-              (click)="openDialog('Update', element)"
-              class="m-r-10 cursor-pointer"
-              ><i-tabler name="edit" class="icon-18"></i-tabler
-            ></a>
-            <a
-              (click)="openDialog('Delete', element)"
-              class="m-r-10 cursor-pointer"
-            >
-              <i-tabler name="trash" class="icon-18"></i-tabler>
-            </a>
-          </td>
-        </ng-container>
-
-        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
-      </table>
-      <mat-paginator
-        [pageSizeOptions]="[5, 10, 20]"
-        showFirstLastButtons
-      ></mat-paginator>
+  <div class="card-container">
+  <mat-card *ngFor="let materiel of dataSource.data" class="cardWithShadow">
+    <mat-card-content>
+      <h2>{{ materiel.materielName }}</h2>
+      <!-- Existing details -->
+      
+      <p>Type: {{ materiel.type }}</p>
+      <p>Status: {{ materiel.status }}</p>
+      <p>TeamName: {{ materiel.teamName }}</p>
+      
+      <!-- Actions are also hidden initially and only shown on hover -->
+      <div class="d-flex justify-content-end">
+        <a (click)="openDialog('Update', materiel)" class="m-r-10 cursor-pointer">
+          <i-tabler name="edit" class="icon-18"></i-tabler>
+        </a>
+        <a (click)="openDialog('Delete', materiel)" class="m-r-10 cursor-pointer">
+          <i-tabler name="trash" class="icon-18"></i-tabler>
+        </a>
+      </div>
+    </mat-card-content>
+  </mat-card>
+  <div class="card-container">
+    <mat-card *ngFor="let installation of installationDataSource.data" class="cardWithShadow">
+      <mat-card-content>
+        <h2>{{ installation.installationName }}</h2>
+        <!-- Existing details -->
+        <p>Type: {{ installation.type }}</p>
+        <p>id: {{ installation.installationId }}</p>
+        <p>Disponibilité: {{ installation.disponibilite }}</p>
+        <p>Capacité: {{ installation.capacite }}</p>
+        <p>TeamName: {{ installation.teamName }}</p>
+        
+        <!-- Actions are also hidden initially and only shown on hover -->
+        <div class="d-flex justify-content-end">
+          <a (click)="openUpdateInstallationDialog('Update', installation)" class="m-r-10 cursor-pointer">
+            <i-tabler name="edit" class="icon-18"></i-tabler>
+          </a>
+         
+          <a (click)="openDeleteInstallationDialog('Delete', installation)" class="m-r-10 cursor-pointer">
+            <i-tabler name="trash" class="icon-18"></i-tabler>
+          </a>
+          
+          
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+  <div class="card-container">
+    <mat-card *ngFor="let logiciel of logicielDataSource.data" class="cardWithShadow">
+      <mat-card-content>
+        <h2>{{ logiciel.logicielName }}</h2>
+        <!-- Existing details -->
+        <p>Type: {{ logiciel.type }}</p>
+        <p>Sattus: {{ logiciel.status }}</p>
+        
+        <p>TeamName: {{ logiciel.teamName }}</p>
+        
+        <!-- Actions are also hidden initially and only shown on hover -->
+        <div class="d-flex justify-content-end">
+          <a (click)="openUpdateLogicielDialog('Update', logiciel)" class="m-r-10 cursor-pointer">
+            <i-tabler name="edit" class="icon-18"></i-tabler>
+          </a>
+        
+          <a (click)="openDeleteLogicielDialog('Delete', logiciel)" class="m-r-10 cursor-pointer">
+            <i-tabler name="trash" class="icon-18"></i-tabler>
+          </a>        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
     </div>
-  </mat-card-content>
-</mat-card>

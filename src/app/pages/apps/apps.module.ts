@@ -128,10 +128,12 @@ import { SessionSuccessDialogComponent } from './SessionTraining/session-success
 import { ErrorDialogComponent } from './manager/error-dialog/error-dialog.component';
 import { ScrimsDialogComponent } from './SessionTraining/scrims-dialog/scrims-dialog.component';
 import { PlayerSelectDialogComponent } from './SessionTraining/player-select-dialog/player-select-dialog.component';
-// import { AddDepenseDialogComponent } from './Scrims/add-depense-dialog/add-depense-dialog.component';
-import { MatDatepickerModule } from '@angular/material/datepicker';
 import { AddDepenseDialogComponent } from './Scrims/add-depense-dialog/add-depense-dialog.component';
 import { AddRevenusDialogComponentComponent } from './Scrims/add-revenus-dialog-component/add-revenus-dialog-component.component';
+import { InstallationDialogComponent } from './compitenceplayer/installation-dialog/installation-dialog.component';
+import { LogicielDialogComponent } from './compitenceplayer/logiciel-dialog/logiciel-dialog.component';
+import { UpdateInstallationDialogComponent } from './compitenceplayer/update-installation-dialog/update-installation-dialog.component';
+import { UpdateLogicielDialogComponent } from './compitenceplayer/update-logiciel-dialog/update-logiciel-dialog.component';
 
 
 
@@ -258,7 +260,11 @@ AppCoachDialogContentComponent,
     ScrimsDialogComponent,
     PlayerSelectDialogComponent,
       AddDepenseDialogComponent ,
-      AddRevenusDialogComponentComponent
+      AddRevenusDialogComponentComponent,
+      InstallationDialogComponent,
+      LogicielDialogComponent,
+      UpdateInstallationDialogComponent,
+      UpdateLogicielDialogComponent
     
      ],
      

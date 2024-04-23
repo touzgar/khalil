@@ -1,118 +1,148 @@
-import { Component, Inject, Optional, ViewChild, AfterViewInit } from '@angular/core';
+import { Component, Inject, Optional, ViewChild, AfterViewInit, ChangeDetectorRef, EventEmitter } from '@angular/core';
 import { MatTableDataSource, MatTable } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { DatePipe } from '@angular/common';
 import { AppAddCompitencePlayerComponent } from './add/add.component';
+import { Materiel } from './materielmodel';
+import { ResourceService } from './resource.service';
+import { Team } from '../team/team.model';
+import { Observable } from 'rxjs';
+import { InstallationDialogComponent } from './installation-dialog/installation-dialog.component';
+import { LogicielDialogComponent } from './logiciel-dialog/logiciel-dialog.component';
+import { Installation } from './installationmodel';
+import { Logiciel } from './logiciel.model';
+import { UpdateInstallationDialogComponent } from './update-installation-dialog/update-installation-dialog.component';
+import { UpdateLogicielDialogComponent } from './update-logiciel-dialog/update-logiciel-dialog.component';
 
 
 
 
-export interface Compitence {
-  idCompetence: number;
-  competence: string;
-  historiquePerformence: string;
-  kdRiot: number;
-  winPorsontage: string;
-  leagalefullname?: string;
-}
+// export interface Compitence {
+//   idCompetence: number;
+//   competence: string;
+//   historiquePerformence: string;
+//   kdRiot: number;
+//   winPorsontage: string;
+//   leagalefullname?: string;
+// }
 
-const Compitences = [
-  {
-    idCompetence: 1,
-    competence: ' competence',
-    historiquePerformence: "silver , Goled ,iron",
-    kdRiot: 50,
-    winPorsontage: '70%'
-  },
+// const Compitences = [
+//   {
+//     idCompetence: 1,
+//     competence: ' competence',
+//     historiquePerformence: "silver , Goled ,iron",
+//     kdRiot: 50,
+//     winPorsontage: '70%'
+//   },
  
-  {
-    idCompetence: 2,
-    competence: ' competence',
-    historiquePerformence: "silver , Goled ,iron",
-    kdRiot: 50,
-    winPorsontage: '70%.'
-  },
-  {
-    idCompetence: 3,
-    competence: ' competence',
-    historiquePerformence: "silver , Goled ,iron",
-    kdRiot: 50,
+//   {
+//     idCompetence: 2,
+//     competence: ' competence',
+//     historiquePerformence: "silver , Goled ,iron",
+//     kdRiot: 50,
+//     winPorsontage: '70%.'
+//   },
+//   {
+//     idCompetence: 3,
+//     competence: ' competence',
+//     historiquePerformence: "silver , Goled ,iron",
+//     kdRiot: 50,
   
-    winPorsontage: '70%.'
-  },
-  {
-    idCompetence: 4,
-    competence: ' competence',
-    historiquePerformence: "silver , Goled ,iron",
-    kdRiot: 50,
+//     winPorsontage: '70%.'
+//   },
+//   {
+//     idCompetence: 4,
+//     competence: ' competence',
+//     historiquePerformence: "silver , Goled ,iron",
+//     kdRiot: 50,
  
-    winPorsontage: '70%.'
-  },
-  {
-    idCompetence: 5,
-    competence: ' competence',
-    historiquePerformence: "silver , Goled ,iron",
-    kdRiot: 50,
+//     winPorsontage: '70%.'
+//   },
+//   {
+//     idCompetence: 5,
+//     competence: ' competence',
+//     historiquePerformence: "silver , Goled ,iron",
+//     kdRiot: 50,
 
-    winPorsontage: '70%.'
-  },
-  {
-    idCompetence: 6,
-    competence: ' competence',
-    historiquePerformence: "silver , Goled ,iron",
-    kdRiot: 50,
+//     winPorsontage: '70%.'
+//   },
+//   {
+//     idCompetence: 6,
+//     competence: ' competence',
+//     historiquePerformence: "silver , Goled ,iron",
+//     kdRiot: 50,
   
-    winPorsontage: '70%.'
-  },
-  {
-    idCompetence: 7,
-    competence: ' competence',
-    historiquePerformence: "silver , Goled ,iron",
-    kdRiot: 50,
+//     winPorsontage: '70%.'
+//   },
+//   {
+//     idCompetence: 7,
+//     competence: ' competence',
+//     historiquePerformence: "silver , Goled ,iron",
+//     kdRiot: 50,
 
-    winPorsontage: '70%.'
-  },
-  {
-    idCompetence: 8,
-    competence: ' competence',
-    historiquePerformence: "silver , Goled ,iron",
-    kdRiot: 50,
+//     winPorsontage: '70%.'
+//   },
+//   {
+//     idCompetence: 8,
+//     competence: ' competence',
+//     historiquePerformence: "silver , Goled ,iron",
+//     kdRiot: 50,
  
-    winPorsontage: '70%.'
-  },
-  {
-    idCompetence: 9,
-    competence: ' competence',
-    historiquePerformence: "silver , Goled ,iron",
-    kdRiot: 50,
+//     winPorsontage: '70%.'
+//   },
+//   {
+//     idCompetence: 9,
+//     competence: ' competence',
+//     historiquePerformence: "silver , Goled ,iron",
+//     kdRiot: 50,
 
-    winPorsontage: '70%.'
-  },
-];
+//     winPorsontage: '70%.'
+//   },
+// ];
 
 @Component({
   templateUrl: './compitenceplayer.component.html',
+  styleUrls:['./compitenceplayer.component.scss'],
 })
 export class AppCompitencePlayerComponent implements AfterViewInit {
+  materiel:Materiel[];
+  installation:Installation[];
+  logiciel:Logiciel[];
+  team:Team[];
+  installationDataSource = new MatTableDataSource<Installation>([]); 
+  logicielDataSource = new MatTableDataSource<Logiciel>([]); 
   @ViewChild(MatTable, { static: true }) table: MatTable<any> = Object.create(null);
   searchText: any;
   displayedColumns: string[] = [
     '#',
-    'competence',
-    'historiquePerformence',
-    'kdRiot',
-    'winPorsontage',
+    'materielName',
+    'type',
+    'status',
+    'teamName',
     'action'
 
   ];
-  dataSource = new MatTableDataSource(Compitences);
+  
+  dataSource = new MatTableDataSource<Materiel>([])
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator = Object.create(null);
+  installationAdded: EventEmitter<void> = new EventEmitter<void>();
 
-  constructor(public dialog: MatDialog, public datePipe: DatePipe) { }
-
+  constructor(public dialog: MatDialog, public datePipe: DatePipe,private resourceService:ResourceService,
+    private changeDetectorRefs: ChangeDetectorRef) { }
+  loadTeams(): void {
+    this.resourceService.getTeams().subscribe((data: Team[]) => {
+      this.team = data;
+    }, error => {
+      console.error('Failed to load teams', error);
+    });
+  }
   ngAfterViewInit(): void {
     this.dataSource.paginator = this.paginator;
+    this.loadTeams();
+    this.chargerMateriel();
+    this.chargerInstallation(); // Refresh installation data
+    this.chargerLogiciel();
   }
 
   applyFilter(filterValue: string): void {
@@ -121,52 +151,235 @@ export class AppCompitencePlayerComponent implements AfterViewInit {
 
   openDialog(action: string, obj: any): void {
     obj.action = action;
+    obj.team=this.team;
     const dialogRef = this.dialog.open(AppCompitencePlayerDialogContentComponent, {
       data: obj,
     });
     dialogRef.afterClosed().subscribe((result) => {
       if (result.event === 'Add') {
+        this.addMatreil(result.data);
         this.addRowData(result.data);
       } else if (result.event === 'Update') {
+        this.modifierMateriel(result.data);    
         this.updateRowData(result.data);
       } else if (result.event === 'Delete') {
+        this.deleteMateriel(result.data);
         this.deleteRowData(result.data);
       }
     });
   }
+  addMatreil(matData: Materiel): void {
+    // Check if status is a string before comparison
+    if (typeof matData.status === 'string') {
+      // Convert the status field to boolean if it's a string
+      matData.status = matData.status === 'true'; // Convert string to boolean
+    }
+    
+    console.log("Sending data to server:", matData);
+    this.resourceService.addMateriel(matData).subscribe({
+      next: (newMateriel) => {
+        console.log("Materiel added successfully", newMateriel);
+        // Update the data source after adding the material
+        this.chargerMateriel();
+      },
+      error: (error) => {
+        console.error("Error adding materiel", error);
+      }
+    });
+  }
+  openAddInstallationDialog(action: string, data: any): void {
+    data.team = this.team;
+    const dialogRef = this.dialog.open(InstallationDialogComponent, {
+      width: '400px',
+      data: { action: action, ...data }
+    });
+  
+    // Subscribe to the afterClosed event of the dialog
+    dialogRef.afterClosed().subscribe(result => {
+      // Check if the result is not null
+      if (result !== undefined && result.event === 'Submit') {
+        console.log('Data submitted:', result.data);
+        // Update the installationDataSource with the new installation
+        this.installationDataSource.data.push(result.data);
+        // Reassign the data source to trigger Angular's change detection
+        this.installationDataSource.data = [...this.installationDataSource.data];
+      } else if (result !== undefined && result.event === 'Cancel') {
+        console.log('Dialog was cancelled');
+      }
+    });
+  }
+   
+  openDeleteInstallationDialog(action: string, installation: any): void {
+    const dialogRef = this.dialog.open(AppCompitencePlayerDialogContentComponent, {
+      data: { action: action, ...installation },
+    });
+    
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result.event === 'Delete') {
+        this.deleteInstallation(result.data);
+        this.deleteInsData(result.data);
+      }
+    });
+  }
+  openUpdateInstallationDialog(action: string, installation: any): void {
+    const dialogRef = this.dialog.open(UpdateInstallationDialogComponent, {
+      data: { action: action, ...installation },
+    });
+  
+    dialogRef.afterClosed().subscribe((result) => {
+      // Handle any actions or events after the dialog is closed
+      if (result === 'update') {
+        // Logic for handling the update action if needed
+      } else if (result === 'cancel') {
+        // Logic for handling the cancel action if needed
+      }
+    });
+  
+  }
+  openAddLogicielDialog(action: string, data: any): void {
+    data.team=this.team;
+    const dialogRef = this.dialog.open(LogicielDialogComponent, {
+      width: '400px',
+      data: { action: action, ...data }
+    });
+  
+    dialogRef.afterClosed().subscribe(result => {
+      if (result.event === 'Submit') {
+        console.log('Data submitted:', result.data);
+        // Additional logic to handle submitted data
+      } else if (result.event === 'Cancel') {
+        console.log('Dialog was cancelled');
+      }
+    });
+  }  
+  openDeleteLogicielDialog(action: string, logiciel: any): void {
+    const dialogRef = this.dialog.open(AppCompitencePlayerDialogContentComponent, {
+      data: { action: action, ...logiciel },
+    });
+    
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result.event === 'Delete') {
+        this.deleteLogiciel(result.data);
+        this.deleteLogData(result.data);
+      }
+    });
+  }
+  openUpdateLogicielDialog(action: string, logiciel: any): void {
+    const dialogRef = this.dialog.open(UpdateLogicielDialogComponent, {
+      data: { action: action, ...logiciel },
+    });
+  
+    dialogRef.afterClosed().subscribe((result) => {
+      // Handle any actions or events after the dialog is closed
+      if (result === 'update') {
+        // Logic for handling the update action if needed
+      } else if (result === 'cancel') {
+        // Logic for handling the cancel action if needed
+      }
+    });
+  
+  }
+  chargerMateriel(){
+    this.resourceService.getMateriel().subscribe(mat=>{
+      console.log(mat);
+      this.materiel=mat;
+      this.dataSource.data=this.materiel;
+      this.changeDetectorRefs.detectChanges();
+    })
+  }
+ 
+  chargerInstallation() {
+    this.resourceService.getInstallation().subscribe(ins => {
+      console.log(ins);
+      this.installation = ins;
+      this.installationDataSource.data = this.installation; // Populate the data source
+      this.changeDetectorRefs.detectChanges();
+    });
+  }
+
+  // Method to handle installation addition event
+  handleInstallationAdded(): void {
+    this.chargerInstallation(); // Refresh installation data
+  }
+   chargerLogiciel(){
+    this.resourceService.getLogiciel().subscribe(log=>{
+      console.log(log);
+      this.logiciel=log;
+      this.logicielDataSource.data=this.logiciel;
+      this.changeDetectorRefs.detectChanges();
+    })
+  }
+  deleteMateriel(mat:Materiel){
+    this.resourceService.supprimerMateriel(mat.materielId).subscribe(() => {
+      console.log('Materiel supprimé');
+      this.chargerMateriel();
+   });
+  }
+  deleteInstallation(ins: Installation): void {
+    if (ins && ins.installationId) {
+        this.resourceService.supprimerInstallation(ins.installationId).subscribe(
+            () => {
+                console.log('Installation supprimé');
+                this.chargerInstallation();
+            },
+            (error) => {
+                console.error('Error deleting installation:', error);
+            }
+        );
+    } else {
+        console.error('Invalid installation or installation ID');
+    }
+}
+deleteLogiciel(log:Logiciel){
+  this.resourceService.supprimerLogiciel(log.logicielId).subscribe(() => {
+    console.log('Logiciel supprimé');
+    this.chargerLogiciel();
+ });
+}
+modifierMateriel(mat: Materiel): void {
+  this.resourceService.updateMateriel(mat).subscribe(() => {
+    console.log('Materiel updated successfully');
+    this.chargerMateriel(); // Refresh the list
+  }, error => {
+    console.error('Error updating materiel', error);
+  });
+}
+modifierInstallation(ins: Installation): void {
+  this.resourceService.updateInstallation(ins).subscribe(() => {
+    console.log('Installation updated successfully');
+    this.chargerInstallation(); // Refresh the list
+  }, error => {
+    console.error('Error updating installation', error);
+  });
+}
 
   // tslint:disable-next-line - Disables all
-  addRowData(row_obj: Compitence): void {
-    this.dataSource.data.unshift({
-      idCompetence: Compitences.length + 1,
-      competence: row_obj.competence,
-      historiquePerformence: row_obj.historiquePerformence,
-      kdRiot: row_obj.kdRiot,
-      winPorsontage: row_obj.winPorsontage,
+  addRowData(row_obj: Materiel): void {
     
-    });
     this.dialog.open(AppAddCompitencePlayerComponent);
     this.table.renderRows();
   }
 
   // tslint:disable-next-line - Disables all
-  updateRowData(row_obj: Compitence): boolean | any {
-    this.dataSource.data = this.dataSource.data.filter((value: any) => {
-      if (value.idCompetence === row_obj.idCompetence) {
-        value.competence = row_obj.competence;
-        value.historiquePerformence = row_obj.historiquePerformence;
-        value.kdRiot = row_obj.kdRiot;
-        value.winPorsontage = row_obj.winPorsontage;
-      }
-      return true;
-    });
+  updateRowData(row_obj: Materiel): boolean | any {
+    
+  }
+  updateInsData(row_obj: Installation): boolean | any {
+    
+  }
+  updateLogData(row_obj: Logiciel): boolean | any {
+    
   }
 
   // tslint:disable-next-line - Disables all
-  deleteRowData(row_obj: Compitence): boolean | any {
-    this.dataSource.data = this.dataSource.data.filter((value: any) => {
-      return value.idCompetence !== row_obj.idCompetence;
-    });
+  deleteRowData(row_obj: Materiel): boolean | any {
+   
+  }
+  deleteInsData(row_obj: Installation): boolean | any {
+   
+  }
+  deleteLogData(row_obj: Logiciel): boolean | any {
+   
   }
 }
 
@@ -187,7 +400,7 @@ export class AppCompitencePlayerDialogContentComponent {
     public datePipe: DatePipe,
     public dialogRef: MatDialogRef<AppCompitencePlayerDialogContentComponent>,
     // @Optional() is used to prevent error if no data is passed
-    @Optional() @Inject(MAT_DIALOG_DATA) public data: Compitence,
+    @Optional() @Inject(MAT_DIALOG_DATA) public data: Materiel,
   ) {
     this.local_data = { ...data };
     this.action = this.local_data.action;

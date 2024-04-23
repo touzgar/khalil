@@ -1,0 +1,21 @@
+<h2 mat-dialog-title>Update Installation</h2>
+<div mat-dialog-content>
+  <form #updateInstallationForm="ngForm" (ngSubmit)="onUpdateClick(data)">
+    <mat-form-field>
+      <input matInput placeholder="Installation Name" name="installationName" [(ngModel)]="data.installationName" required>
+    </mat-form-field>
+    <mat-form-field>
+      <input matInput type="text" placeholder="Type" name="type" [(ngModel)]="data.type" required>
+    </mat-form-field>
+    <mat-form-field>
+      <input matInput type="text" placeholder="Disponibilité" name="disponibilite" [(ngModel)]="data.disponibilite" required>
+    </mat-form-field>
+    <mat-form-field>
+      <input type="number" matInput placeholder="Capacité" name="capacite" [(ngModel)]="data.capacite" required>
+    </mat-form-field>
+        <div mat-dialog-actions>
+      <button mat-button (click)="onCancelClick()">Cancel</button>
+      <button mat-button color="primary" [disabled]="!updateInstallationForm.valid" type="submit">Update</button>
+    </div>
+  </form>
+</div>
