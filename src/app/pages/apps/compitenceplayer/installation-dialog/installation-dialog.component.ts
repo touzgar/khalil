@@ -11,6 +11,7 @@ import { ResourceService } from '../resource.service';
 })
 export class InstallationDialogComponent implements OnInit {
   team: Team[] = []; // Initialize as an empty array
+  
   @Output() installationAdded: EventEmitter<void> = new EventEmitter<void>(); // Declare the event emitter
 
   constructor(
@@ -34,6 +35,8 @@ export class InstallationDialogComponent implements OnInit {
       next: (newInstallation) => {
         console.log("Installtion added successfully", newInstallation);
         this.installationAdded.emit(); // Emit event after successful addition
+         this.dialogRef.close({ event: 'Submit', data: newInstallation });
+
       },
       error: (error) => {
         console.error("Error adding installation", error);
@@ -45,4 +48,24 @@ export class InstallationDialogComponent implements OnInit {
   onCancelClick(): void {
     this.dialogRef.close();
   }
+  // Inside your InstallationDialogComponent
+
+// onSaveClick(insData: Installation): void {
+//   if (typeof insData.disponibilite === 'string') {
+//     insData.disponibilite = insData.disponibilite.toLowerCase() === 'true';
+//   }
+
+//   this.resourceService.addInstallation(insData).subscribe({
+//     next: (newInstallation) => {
+//       console.log("Installation added successfully", newInstallation);
+//       this.installationAdded.emit();
+//       this.dialogRef.close({ event: 'Submit', data: newInstallation });
+//     },
+//     error: (error) => {
+//       console.error("Error adding installation", error);
+//       this.dialogRef.close({ event: 'Error', data: null });
+//     }
+//   });
+// }
+
 }

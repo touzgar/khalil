@@ -1,92 +1,80 @@
 .search-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0 16px;
-    margin-bottom: 20px;
-  }
-  
-  .search-input {
-    width: 200px; // Reduce width of the search input
-  }
-  .add-buttons {
-    display: flex; /* Ensures buttons are side-by-side */
-    gap: 8px; /* Adds space between the two buttons */
-  }
-  
-  .card-container {
-    display: flex;
-    flex-wrap: wrap; // Allows cards to wrap to the next line on small screens
-    gap: 20px; // Space between cards
-  }
-  
-  .cardWithShadow {
-    width: 300px;
-    height: 100px;
-    overflow: hidden;
-    border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    transition: all 0.3s ease-in-out;
-  
-    &:hover {
-      height: auto; // Expand height on hover
-      box-shadow: 0 12px 16px rgba(0, 0, 0, 0.2);
-    }
-  
-    .mat-card-content {
-      padding: 16px;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-  
-      h2 {
-        font-size: 16px;
-        font-weight: 600;
-      }
-  
-      p {
-        font-size: 14px;
-        display: none;
-      }
-  
-      &:hover p {
-        display: block; // Show details on hover
-      }
-    }
-  }
- /* Calendar Header */
-/* Navbar Styles */
-.navbar-container {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: #5d87ff; /* Adjust color as needed */
-  padding: 10px;
-  color: white;
+  padding: 0 16px;
+  margin-bottom: 20px;
 }
 
-.date-display {
-  font-size: 1.5rem;
+.search-input {
+  width: 200px; /* Fixed width for search input */
 }
 
-.nav-buttons button.nav-item {
+.add-buttons {
+  display: flex;
+  gap: 8px; /* Space between buttons */
+}
+
+.card-container {
+  display: flex;
+  flex-wrap: wrap; /* Allow wrapping on smaller screens */
+  gap: 20px; /* Space between cards */
+}
+
+.cardWithShadow {
+  width: 300px;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column; /* Stack content vertically */
+  justify-content: space-between; /* Space between content and actions */
+  transition: box-shadow 0.3s ease-in-out;
+}
+
+.cardWithShadow:hover {
+  box-shadow: 0 12px 16px rgba(0, 0, 0, 0.2);
+}
+
+.rideau {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.8); /* Dark semi-transparent overlay */
   color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.2rem;
   font-weight: bold;
-  margin: 0 10px;
+  transition: transform 0.5s ease-in-out;
 }
 
-.nav-buttons button.nav-item.active {
-  text-decoration: underline;
+.cardWithShadow:hover .rideau {
+  transform: translateX(-100%); /* Slide out the rideau on hover */
 }
 
-.action-buttons .icon-button {
-  color: white;
+.mat-card-content {
+  flex-grow: 1; /* Allows content to expand and push actions to the bottom */
+  padding: 16px;
+  text-align: center;
 }
 
-.action-buttons .icon-button mat-icon {
-  /* Optional: Adjust icon size if needed */
-  font-size: 24px;
-  width: 24px;
-  height: 24px;
+.actions {
+  padding: 10px 16px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.action-icon {
+  color: #333;
+  cursor: pointer;
+}
+
+.action-icon:hover {
+  color: #007bff; /* Change color on hover */
 }

@@ -127,7 +127,7 @@ export class AppCompitencePlayerComponent implements AfterViewInit {
   dataSource = new MatTableDataSource<Materiel>([])
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator = Object.create(null);
   installationAdded: EventEmitter<void> = new EventEmitter<void>();
-
+  hoveredInstallation: Installation | null = null; 
   constructor(public dialog: MatDialog, public datePipe: DatePipe,private resourceService:ResourceService,
     private changeDetectorRefs: ChangeDetectorRef) { }
   loadTeams(): void {
@@ -143,6 +143,14 @@ export class AppCompitencePlayerComponent implements AfterViewInit {
     this.chargerMateriel();
     this.chargerInstallation(); // Refresh installation data
     this.chargerLogiciel();
+  }
+  onMouseEnter(installation: Installation): void {
+    this.hoveredInstallation = installation;
+  }
+
+  // Method to handle mouse leave event
+  onMouseLeave(): void {
+    this.hoveredInstallation = null;
   }
 
   applyFilter(filterValue: string): void {
@@ -189,6 +197,7 @@ export class AppCompitencePlayerComponent implements AfterViewInit {
   }
   openAddInstallationDialog(action: string, data: any): void {
     data.team = this.team;
+    
     const dialogRef = this.dialog.open(InstallationDialogComponent, {
       width: '400px',
       data: { action: action, ...data }
@@ -223,6 +232,8 @@ export class AppCompitencePlayerComponent implements AfterViewInit {
   }
   openUpdateInstallationDialog(action: string, installation: any): void {
     const dialogRef = this.dialog.open(UpdateInstallationDialogComponent, {
+      width: '400px',
+      
       data: { action: action, ...installation },
     });
   
@@ -266,6 +277,7 @@ export class AppCompitencePlayerComponent implements AfterViewInit {
   }
   openUpdateLogicielDialog(action: string, logiciel: any): void {
     const dialogRef = this.dialog.open(UpdateLogicielDialogComponent, {
+      width: '400px',
       data: { action: action, ...logiciel },
     });
   
