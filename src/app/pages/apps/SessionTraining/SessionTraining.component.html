@@ -20,26 +20,23 @@
 </div>
 
 <!-- Container for cards -->
+<!-- Session Cards Container -->
 <div class="card-container">
   <mat-card *ngFor="let session of dataSource.data" class="cardWithShadow">
-    <mat-card-content>
+    <!-- Rideau (Curtain) -->
+    <div class="session-rideau">
+      <h2>Session</h2> <!-- Static text "Session" -->
+    </div>
+    <!-- Card Content -->
+    <mat-card-content class="session-details">
       <h2>{{ session.sessionName }}</h2>
-      <!-- Existing details -->
       <p>Start Date: {{ session.dateStart | date }}</p>
       <p>End Date: {{ session.dateEnd | date }}</p>
       <p>Objectives: {{ session.objectifs }}</p>
-      <p>FeedbacksEntraineurs: {{ session.feedbacksEntraineurs }}</p>
+      <p>Feedbacks: {{ session.feedbacksEntraineurs }}</p>
       <p>Coach: {{ session.username }}</p>
       <p>Players: {{ session.playerNames }}</p>
-      <!-- Scrims details -->
-      <!-- <ng-container *ngIf="session.scrims">
-        <h3>Scrims Details</h3>
-        <p>Description: {{ session.scrims.description }}</p>
-        <p>Level: {{ session.scrims.niveau }}</p>
-        <p>Mode: {{ session.scrims.mode }}</p>
-      </ng-container>
-       -->
-      <!-- Actions are also hidden initially and only shown on hover -->
+      <!-- Actions -->
       <div class="d-flex justify-content-end">
         <a (click)="openDialog('Update', session)" class="m-r-10 cursor-pointer">
           <i-tabler name="edit" class="icon-18"></i-tabler>

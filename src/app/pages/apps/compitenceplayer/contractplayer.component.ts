@@ -14,6 +14,7 @@ import { Installation } from './installationmodel';
 import { Logiciel } from './logiciel.model';
 import { UpdateInstallationDialogComponent } from './update-installation-dialog/update-installation-dialog.component';
 import { UpdateLogicielDialogComponent } from './update-logiciel-dialog/update-logiciel-dialog.component';
+import { MaterielSucessDialogComponent } from './materiel-sucess-dialog/materiel-sucess-dialog.component';
 
 
 
@@ -177,24 +178,29 @@ export class AppCompitencePlayerComponent implements AfterViewInit {
     });
   }
   addMatreil(matData: Materiel): void {
-    // Check if status is a string before comparison
     if (typeof matData.status === 'string') {
-      // Convert the status field to boolean if it's a string
-      matData.status = matData.status === 'true'; // Convert string to boolean
+        matData.status = matData.status === 'true'; // Ensure correct data type for status
     }
-    
+
     console.log("Sending data to server:", matData);
     this.resourceService.addMateriel(matData).subscribe({
-      next: (newMateriel) => {
-        console.log("Materiel added successfully", newMateriel);
-        // Update the data source after adding the material
-        this.chargerMateriel();
-      },
-      error: (error) => {
-        console.error("Error adding materiel", error);
-      }
+        next: (newMateriel) => {
+            console.log("Materiel added successfully", newMateriel);
+            this.dataSource.data.push(newMateriel); // Update the table dataSource
+            this.dataSource._updateChangeSubscription(); // Ensure the table updates
+
+            // Close any existing dialogs and open the success dialog
+            this.dialog.closeAll();
+            this.dialog.open( MaterielSucessDialogComponent, {
+                width: '400px',
+                data: { message: "Materiel Successfully Added" }
+            });
+        },
+        error: (error) => {
+            console.error("Error adding materiel", error);
+        }
     });
-  }
+}
   openAddInstallationDialog(action: string, data: any): void {
     data.team = this.team;
     
@@ -255,13 +261,27 @@ export class AppCompitencePlayerComponent implements AfterViewInit {
     });
   
     dialogRef.afterClosed().subscribe(result => {
-      if (result.event === 'Submit') {
+      if (result !== undefined && result.event === 'Submit') {
         console.log('Data submitted:', result.data);
+        this.logicielDataSource.data.push(result.data);
+        this.logicielDataSource.data=[...this.logicielDataSource.data];   
         // Additional logic to handle submitted data
-      } else if (result.event === 'Cancel') {
+      } else if (result !== undefined && result.event === 'Cancel') {
         console.log('Dialog was cancelled');
       }
     });
+    // dialogRef.afterClosed().subscribe(result => {
+    //   // Check if the result is not null
+    //   if (result !== undefined && result.event === 'Submit') {
+    //     console.log('Data submitted:', result.data);
+    //     // Update the installationDataSource with the new installation
+    //     this.installationDataSource.data.push(result.data);
+    //     // Reassign the data source to trigger Angular's change detection
+    //     this.installationDataSource.data = [...this.installationDataSource.data];
+    //   } else if (result !== undefined && result.event === 'Cancel') {
+    //     console.log('Dialog was cancelled');
+    //   }
+    // });
   }  
   openDeleteLogicielDialog(action: string, logiciel: any): void {
     const dialogRef = this.dialog.open(AppCompitencePlayerDialogContentComponent, {
@@ -434,23 +454,23 @@ export class AppCompitencePlayerDialogContentComponent {
     this.dialogRef.close({ event: 'Cancel' });
   }
 
-  selectFile(event: any): void {
-    if (!event.target.files[0] || event.target.files[0].length === 0) {
-      // this.msg = 'You must select an image';
-      return;
-    }
-    const mimeType = event.target.files[0].type;
-    if (mimeType.match(/image\/*/) == null) {
-      // this.msg = "Only images are supported";
-      return;
-    }
-    // tslint:disable-next-line - Disables all
-    const reader = new FileReader();
-    reader.readAsDataURL(event.target.files[0]);
-    // tslint:disable-next-line - Disables all
-    reader.onload = (_event) => {
-      // tslint:disable-next-line - Disables all
-      this.local_data.imagePath = reader.result;
-    };
-  }
+  // selectFile(event: any): void {
+  //   if (!event.target.files[0] || event.target.files[0].length === 0) {
+  //     // this.msg = 'You must select an image';
+  //     return;
+  //   }
+  //   const mimeType = event.target.files[0].type;
+  //   if (mimeType.match(/image\/*/) == null) {
+  //     // this.msg = "Only images are supported";
+  //     return;
+  //   }
+  //   // tslint:disable-next-line - Disables all
+  //   const reader = new FileReader();
+  //   reader.readAsDataURL(event.target.files[0]);
+  //   // tslint:disable-next-line - Disables all
+  //   reader.onload = (_event) => {
+  //     // tslint:disable-next-line - Disables all
+  //     this.local_data.imagePath = reader.result;
+  //   };
+  // }
 }

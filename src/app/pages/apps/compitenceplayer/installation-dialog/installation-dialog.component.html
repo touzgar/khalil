@@ -8,8 +8,11 @@
       <input matInput type="text" placeholder="Type" name="type" [(ngModel)]="data.type" required>
     </mat-form-field>
     <mat-form-field>
-      <input matInput type="text" placeholder="Disponibilité" name="disponibilite" [(ngModel)]="data.disponibilite" required>
-    </mat-form-field>
+    <mat-select placeholder="Disponibilité" name="disponibilite" [(ngModel)]="data.disponibilite" required>
+      <mat-option [value]="true">True</mat-option>
+      <mat-option [value]="false">False</mat-option>
+    </mat-select>
+  </mat-form-field>
     <mat-form-field>
       <input type="number" matInput placeholder="Capacité" name="capacite" [(ngModel)]="data.capacite" required>    </mat-form-field>
     <mat-form-field>

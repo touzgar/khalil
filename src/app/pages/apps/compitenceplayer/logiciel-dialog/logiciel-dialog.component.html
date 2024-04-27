@@ -8,9 +8,12 @@
       <input matInput type="text" placeholder="Type" name="type" [(ngModel)]="data.type" required>
     </mat-form-field>
     <mat-form-field>
-      <input matInput type="text" placeholder="status" name="status" [(ngModel)]="data.status" required>
-    </mat-form-field>
-<mat-form-field>
+    <mat-select placeholder="Status" name="status" [(ngModel)]="data.status" required>
+      <mat-option [value]="true">True</mat-option>
+      <mat-option [value]="false">False</mat-option>
+    </mat-select>
+  </mat-form-field>
+  <mat-form-field>
       <mat-select placeholder="Team Name" name="teamName" [(ngModel)]="data.teamName">
         <mat-option *ngFor="let team of data.team" [value]="team.teamName">
           {{ team.teamName }}

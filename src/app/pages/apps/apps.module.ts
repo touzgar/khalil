@@ -134,6 +134,9 @@ import { InstallationDialogComponent } from './compitenceplayer/installation-dia
 import { LogicielDialogComponent } from './compitenceplayer/logiciel-dialog/logiciel-dialog.component';
 import { UpdateInstallationDialogComponent } from './compitenceplayer/update-installation-dialog/update-installation-dialog.component';
 import { UpdateLogicielDialogComponent } from './compitenceplayer/update-logiciel-dialog/update-logiciel-dialog.component';
+import { InstallationSuccessDialogComponent } from './compitenceplayer/installation-success-dialog/installation-success-dialog.component';
+import { LogicielSuccessDialogComponent } from './compitenceplayer/logiciel-success-dialog/logiciel-success-dialog.component';
+import { MaterielSucessDialogComponent } from './compitenceplayer/materiel-sucess-dialog/materiel-sucess-dialog.component';
 
 
 
@@ -264,7 +267,10 @@ AppCoachDialogContentComponent,
       InstallationDialogComponent,
       LogicielDialogComponent,
       UpdateInstallationDialogComponent,
-      UpdateLogicielDialogComponent
+      UpdateLogicielDialogComponent,
+      InstallationSuccessDialogComponent,
+      LogicielSuccessDialogComponent,
+      MaterielSucessDialogComponent
     
      ],
      

@@ -67,8 +67,9 @@
       <h2>{{ logiciel.logicielName }}</h2>
       <p>Type: {{ logiciel.type }}</p>
       <p>Status: {{ logiciel.status }}</p>
-      <p>TeamName: {{ logiciel.teamName }}</p>
-    </mat-card-content>
+      <p *ngIf="logiciel.teamName">TeamName: {{ logiciel.teamName }}</p>
+      <p *ngIf="!logiciel.teamName"><b>Team Name not available</b></p>
+      </mat-card-content>
     <div class="actions">
       <a (click)="openUpdateLogicielDialog('Update', logiciel)" class="action-icon">
         <i-tabler name="edit" class="icon-18"></i-tabler>

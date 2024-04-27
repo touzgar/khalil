@@ -34,16 +34,15 @@
 
       <div class="col-lg-6">
         <mat-form-field appearance="outline" class="w-100">
-          <input
-            type="text
-            "
-            matInput
-            required
+          <mat-select
             id="status"
             name="status"
             [(ngModel)]="local_data.status"
-            placeholder="status"
-          />
+            placeholder="Status"
+            required>
+            <mat-option value="true">True</mat-option>
+            <mat-option value="false">False</mat-option>
+          </mat-select>
         </mat-form-field>
       </div>
       <div class="col-lg-6">
