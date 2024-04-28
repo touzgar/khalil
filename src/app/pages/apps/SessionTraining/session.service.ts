@@ -85,9 +85,10 @@ getPlayers(): Observable<Player[]> {
     let httpHeaders=new HttpHeaders({"Authorization":jwt});
   return this.http.get<Player[]>(`${this.url}/getAll`, { headers: this.getHeaders() });
 }
-createScrims(scrimsData: any): Observable<any> {
-  return this.http.post<any>(`${this.api}/add`, scrimsData, { headers: this.getHeaders() });
+createScrims(scrimsData: Scrims): Observable<Scrims> {
+  return this.http.post<Scrims>(`${this.api}/add`, scrimsData, { headers: this.getHeaders() });
 }
+
 listeScrims(): Observable<Scrims[]> {
   let jwt = this.authService.getToken();
   jwt = "Bearer " + jwt;

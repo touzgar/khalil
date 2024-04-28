@@ -38,6 +38,7 @@ export class AppSessionTrainingComponent implements AfterViewInit {
   view: 'month' | 'week' | 'day' = 'month'; // default to month view
   viewDate: Date = new Date();
   event = [];
+  scrims:Scrims[] = [];
   // viewDate: Date = new Date(); // Today's date for calendar
    events: CalendarEvent[] = []; // Events to be shown on the calendar
   @ViewChild(MatTable, { static: false }) table: MatTable<any> = Object.create(null);
@@ -66,10 +67,22 @@ export class AppSessionTrainingComponent implements AfterViewInit {
   ngAfterViewInit(): void {
     this.dataSource.paginator = this.paginator;
     this.chargerSession();
+    this.loadAllData();
+  }
+  loadAllData() {
+    this.loadSessions();
+    this.loadScrims(); // Load scrims data
     this.loadCoaches();
     this.loadPlayers();
     this.loadTeams();
-    this.loadSessions();
+  }
+  loadScrims(): void {
+    this.sessionService.listeScrims().subscribe(
+      scrims => {
+        this.scrims = scrims; // Now we only set scrims
+      },
+      error => console.error('Error loading scrims', error)
+    );
   }
 
   previousClick(): void {
@@ -185,16 +198,24 @@ export class AppSessionTrainingComponent implements AfterViewInit {
       }
     });
   }
-  openScrimsDialog(action: string, data: any): void {
+  // Assuming you have a method in your component to handle the scrim creation response
+handleScrimCreated(newScrim: Scrims): void {
+  this.scrims = [newScrim]; // Replaces the current array with the new scrim only
+  // Or use this to append: this.scrims.push(newScrim);
+}
+
+  openScrimsDialog(action: string, scrim: any): void {
     const dialogRef = this.dialog.open(ScrimsDialogComponent, {
       width: '600px',
-      data: { action: action, ...data }
+      data: { action: action, ...scrim }
       
     });
   
     dialogRef.afterClosed().subscribe(result => {
       if (result.event === 'Submit') {
+        this.handleScrimCreated(result.data);
         console.log('Data submitted:', result.data);
+        this.loadScrims();
         // Additional logic to handle submitted data
       } else if (result.event === 'Cancel') {
         console.log('Dialog was cancelled');

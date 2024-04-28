@@ -3,6 +3,7 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { User } from 'src/app/pages/authentication/model/login.model';
 import { Player } from '../../player/player';
 import { Scrims } from '../../Scrims/Scrims.model';
+import { Team } from '../../team/team.model';
 import { SessionService } from '../session.service';
 
 @Component({
@@ -12,7 +13,9 @@ import { SessionService } from '../session.service';
 export class ScrimsDialogComponent implements OnInit {
   coaches: User[] = [];
   players: Player[] = [];
-
+  teams:Team[]=[];
+  selectedTeam: string[] = [];
+  isTeamSelected = false; 
   constructor(
     public dialogRef: MatDialogRef<ScrimsDialogComponent>,
     @Optional() @Inject(MAT_DIALOG_DATA) public data: any,
@@ -22,8 +25,15 @@ export class ScrimsDialogComponent implements OnInit {
   ngOnInit(): void {
     this.loadCoaches();
     this.loadPlayers();
+    this.loadTeams();
   }
-
+  loadTeams(): void {
+    this.sessionService.getTeams().subscribe((data: Team[]) => {
+      this.teams = data;
+    }, error => {
+      console.error('Failed to load teams', error);
+    });
+  }
   loadCoaches(): void {
     this.sessionService.getCoaches().subscribe({
       next: (coaches) => this.coaches = coaches,
@@ -37,6 +47,25 @@ export class ScrimsDialogComponent implements OnInit {
       error: (error) => console.error('Error fetching players', error)
     });
   }
+  onTeamChange() {
+    if (this.selectedTeam && this.selectedTeam.length > 0) {
+      this.isTeamSelected = true; // Enable player selection if one or more teams are selected
+      this.sessionService.getPlayersByTeamNames(this.selectedTeam).subscribe({
+        next: (players) => {
+          this.players = players; // Update the players' dropdown with the new list
+        },
+        error: (error) => {
+          console.error(`Error fetching players for selected teams:`, error);
+          this.players = []; // Clear the players if there's an error
+        }
+      });
+    } else {
+      this.isTeamSelected = false; // Disable player selection if no team is selected
+      this.players = []; // Clear the player list
+    }
+  }
+  
+  
 
   doAction(): void {
     // Create a new instance of Scrims from the form data
@@ -49,6 +78,7 @@ export class ScrimsDialogComponent implements OnInit {
     scrimsData.mode = this.data.mode;
     scrimsData.description = this.data.description;
     scrimsData.username = this.data.username;
+    scrimsData.teamName = this.data.selectedTeam; 
     scrimsData.playerNames = this.data.playerNames;
     scrimsData.specialObjectives = Array.isArray(this.data.specialObjectives) ? this.data.specialObjectives : [this.data.specialObjectives];
 

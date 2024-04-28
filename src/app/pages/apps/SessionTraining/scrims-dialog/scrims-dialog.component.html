@@ -46,17 +46,33 @@
         </mat-form-field>
       </div>
 
-      <!-- Player Names -->
-      <div class="col-lg-6">
-        <mat-form-field appearance="outline" class="w-100">
-          <mat-label>Player Names</mat-label>
-          <mat-select multiple [(ngModel)]="data.playerNames" name="playerNames">
-            <mat-option *ngFor="let player of players" [value]="player.leagalefullname">
-              {{ player.leagalefullname }}
-            </mat-option>
-          </mat-select>
-        </mat-form-field>
-      </div>
+
+      <!-- ... existing form fields ... -->
+
+<!-- Team Name Select -->
+<div class="col-lg-6">
+  <mat-form-field appearance="outline" class="w-100">
+    <mat-label>Team</mat-label>
+    <mat-select multiple [(ngModel)]="selectedTeam" name="teamName" (selectionChange)="onTeamChange()">
+      <mat-option *ngFor="let team of teams" [value]="team.teamName">
+        {{ team.teamName }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+</div>
+
+<!-- Player Names Select -->
+<div class="col-lg-6">
+  <mat-form-field appearance="outline" class="w-100">
+    <mat-label>Player Names</mat-label>
+    <mat-select multiple [(ngModel)]="data.playerNames" name="playerNames" [disabled]="!isTeamSelected">
+      <mat-option *ngFor="let player of players" [value]="player.leagalefullname">
+        {{ player.leagalefullname }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+</div>
+
 
       <!-- Description -->
       <div class="col-lg-12">

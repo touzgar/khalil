@@ -48,3 +48,28 @@
     </mat-card-content>
   </mat-card>
 </div>
+<!-- Container for Scrims Cards -->
+<!-- Inside your SessionTraining.component.html where you list scrims -->
+<div class="card-container">
+  <mat-card *ngFor="let scrim of scrims" class="cardWithShadow">
+    <mat-card-content class="session-details">
+      <h2>{{ scrim.sessionName }}</h2>
+      <p>Start Date: {{ scrim.dateStart | date }}</p>
+      <p>End Date: {{ scrim.dateEnd | date }}</p>
+      <p>Description: {{ scrim.description }}</p>
+      <p>Level: {{ scrim.niveau }}</p>
+      <p>Mode: {{ scrim.mode }}</p>
+      <p>Special Objectives: {{ scrim.specialObjectives?.join(', ') }}</p>
+      <p>Coach: {{ scrim.username }}</p>
+      <p>Players: {{ scrim.playerNames }}</p>
+      <div class="d-flex justify-content-end">
+        <a (click)="openScrimsDialog('Update', scrim)" class="m-r-10 cursor-pointer">
+          <i-tabler name="edit" class="icon-18"></i-tabler>
+        </a>
+        <a (click)="openScrimsDialog('Delete', scrim)" class="m-r-10 cursor-pointer">
+          <i-tabler name="trash" class="icon-18"></i-tabler>
+        </a>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>
