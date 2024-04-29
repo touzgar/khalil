@@ -63,10 +63,10 @@
       <p>Coach: {{ scrim.username }}</p>
       <p>Players: {{ scrim.playerNames }}</p>
       <div class="d-flex justify-content-end">
-        <a (click)="openScrimsDialog('Update', scrim)" class="m-r-10 cursor-pointer">
+        <a (click)="openUpdateScrimsDialog('Update', scrim)" class="m-r-10 cursor-pointer">
           <i-tabler name="edit" class="icon-18"></i-tabler>
         </a>
-        <a (click)="openScrimsDialog('Delete', scrim)" class="m-r-10 cursor-pointer">
+        <a (click)="openDeleteScrimsDialog('Delete', scrim)" class="m-r-10 cursor-pointer">
           <i-tabler name="trash" class="icon-18"></i-tabler>
         </a>
       </div>

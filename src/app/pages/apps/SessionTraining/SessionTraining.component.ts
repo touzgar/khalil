@@ -17,6 +17,7 @@ import { ScrimsDialogComponent } from './scrims-dialog/scrims-dialog.component';
 import { Team } from '../team/team.model';
 import { CalendarEvent } from 'angular-calendar';
 import { add } from 'date-fns';
+import { UpdateScrimsDialogComponent } from './update-scrims-dialog/update-scrims-dialog.component';
 
 
 
@@ -223,7 +224,36 @@ handleScrimCreated(newScrim: Scrims): void {
     });
     // this.chargerSession(); 
   }
+  openDeleteScrimsDialog(action: string, scrims: any): void {
+    const dialogRef = this.dialog.open(AppSessionTrainingDialogContentComponent, {
+      data: { action: action, ...scrims },
+    });
+    
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result.event === 'Delete') {
+        this.deleteScrims(result.data);
+        this.deleteScrimsData(result.data);
+      }
+    });
+  }
   
+  openUpdateScrimsDialog(action: string, scrims: any): void {
+    const dialogRef = this.dialog.open(UpdateScrimsDialogComponent, {
+      width: '400px',
+      
+      data: { action: action, ...scrims },
+    });
+  
+    dialogRef.afterClosed().subscribe((result) => {
+      // Handle any actions or events after the dialog is closed
+      if (result === 'update') {
+        // Logic for handling the update action if needed
+      } else if (result === 'cancel') {
+        // Logic for handling the cancel action if needed
+      }
+    });
+  
+  }
   // Add, Update, Delete methods to handle the response
   
   addErrorSession(errorMessage: string): void {
@@ -251,6 +281,16 @@ handleScrimCreated(newScrim: Scrims): void {
       console.log('Session supprimé');
       this.chargerSession();
    });
+  }
+  deleteScrims(scrims: Scrims) {
+    this.sessionService.supprimerScrims(scrims.idSession).subscribe(() => {
+      console.log('Scrims deleted');
+      // Update local array to reflect the change in the UI
+      this.scrims = this.scrims.filter(s => s.idSession !== scrims.idSession);
+    }, error => {
+      console.error('Failed to delete scrims', error);
+      // Optionally show an error message
+    });
   }
 
   modifierSession(session: any): void {
@@ -460,9 +500,15 @@ onkeyUp(filterText:string){
   updateRowData(row_obj: Session): boolean | any {
     
   }
+  updateScrimsData(row_obj: Scrims): boolean | any {
+    
+  }
 
   // tslint:disable-next-line - Disables all
   deleteRowData(row_obj: Session): boolean | any {
+    
+  }
+  deleteScrimsData(row_obj: Scrims): boolean | any {
     
   }
 }

@@ -137,6 +137,8 @@ import { UpdateLogicielDialogComponent } from './compitenceplayer/update-logicie
 import { InstallationSuccessDialogComponent } from './compitenceplayer/installation-success-dialog/installation-success-dialog.component';
 import { LogicielSuccessDialogComponent } from './compitenceplayer/logiciel-success-dialog/logiciel-success-dialog.component';
 import { MaterielSucessDialogComponent } from './compitenceplayer/materiel-sucess-dialog/materiel-sucess-dialog.component';
+import { UpdateScrimsDialogComponent } from './SessionTraining/update-scrims-dialog/update-scrims-dialog.component';
+import { ScrimsSuccessDialogComponentComponent } from './SessionTraining/scrims-success-dialog-component/scrims-success-dialog-component.component';
 
 
 
@@ -270,7 +272,9 @@ AppCoachDialogContentComponent,
       UpdateLogicielDialogComponent,
       InstallationSuccessDialogComponent,
       LogicielSuccessDialogComponent,
-      MaterielSucessDialogComponent
+      MaterielSucessDialogComponent,
+      UpdateScrimsDialogComponent,
+      ScrimsSuccessDialogComponentComponent
     
      ],
      

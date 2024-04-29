@@ -36,6 +36,13 @@ team='http://localhost:8089/users/api/team'
     let httpHeaders=new HttpHeaders({"Authorization":jwt});
   return this.http.delete(url,{headers:httpHeaders});
 }
+  supprimerScrims(id:number){
+    const url=`${this.api}/delete/${id}`;
+    let jwt=this.authService.getToken();
+    jwt="Bearer "+jwt;
+    let httpHeaders=new HttpHeaders({"Authorization":jwt});
+  return this.http.delete(url,{headers:httpHeaders});
+}
 updateSession(id: number, sessionData: Session): Observable<Session> {
   const url = `${this.baseUrl}/update/${id}`;
   let headers = new HttpHeaders({

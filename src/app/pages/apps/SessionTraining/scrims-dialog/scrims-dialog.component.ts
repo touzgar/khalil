@@ -1,9 +1,10 @@
 import { Component, Inject, OnInit, Optional } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { User } from 'src/app/pages/authentication/model/login.model';
 import { Player } from '../../player/player';
 import { Scrims } from '../../Scrims/Scrims.model';
 import { Team } from '../../team/team.model';
+import { ScrimsSuccessDialogComponentComponent } from '../scrims-success-dialog-component/scrims-success-dialog-component.component';
 import { SessionService } from '../session.service';
 
 @Component({
@@ -19,7 +20,7 @@ export class ScrimsDialogComponent implements OnInit {
   constructor(
     public dialogRef: MatDialogRef<ScrimsDialogComponent>,
     @Optional() @Inject(MAT_DIALOG_DATA) public data: any,
-    private sessionService: SessionService
+    private sessionService: SessionService,public dialog :MatDialog
   ) {}
 
   ngOnInit(): void {
@@ -68,11 +69,11 @@ export class ScrimsDialogComponent implements OnInit {
   
 
   doAction(): void {
-    // Create a new instance of Scrims from the form data
     const scrimsData = new Scrims();
+    // populate scrimsData from this.data
     scrimsData.sessionName = this.data.sessionName;
-    scrimsData.dateStart = new Date(this.data.dateStart).toISOString(); // Ensure date is in ISO format
-    scrimsData.dateEnd = new Date(this.data.dateEnd).toISOString();     // Ensure date is in ISO format
+    scrimsData.dateStart = new Date(this.data.dateStart).toISOString();
+    scrimsData.dateEnd = new Date(this.data.dateEnd).toISOString();
     scrimsData.feedbacksEntraineurs = this.data.feedbacksEntraineurs;
     scrimsData.niveau = this.data.niveau;
     scrimsData.mode = this.data.mode;
@@ -82,23 +83,26 @@ export class ScrimsDialogComponent implements OnInit {
     scrimsData.playerNames = this.data.playerNames;
     scrimsData.specialObjectives = Array.isArray(this.data.specialObjectives) ? this.data.specialObjectives : [this.data.specialObjectives];
 
-    console.log("Sending data to server:", scrimsData); // Debugging: log data to console
-
-    // Send data to the server
     this.sessionService.createScrims(scrimsData).subscribe({
         next: (response) => {
             console.log('Scrims created successfully', response);
             this.dialogRef.close({ event: 'Submit', data: response });
+            this.openSuccessDialog();
         },
-        
         error: (error) => {
             console.error('Failed to create scrims', error);
             this.dialogRef.close({ event: 'Failed', error: error });
         }
     });
-    
-}
+  }
 
+  openSuccessDialog() {
+    this.dialog.open(ScrimsSuccessDialogComponentComponent, {
+      data: {
+        message: 'Scrims Successfully Added'
+      }
+    });
+  }
 
   closeDialog(): void {
     this.dialogRef.close({ event: 'Cancel' });
