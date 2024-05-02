@@ -12,6 +12,8 @@ import { trigger, transition, style, animate } from '@angular/animations';
 import { AddUserPopupComponent } from './add-user-popup/add-user-popup.component';
 import { DeleteUserDialogComponent } from './delete-user-dialog/delete-user-dialog.component';
 import { EditUserDialogComponent } from './edit-user-dialog/edit-user-dialog.component';
+import { SucessManagerDeleteComponent } from '../manager/sucess-manager-delete/sucess-manager-delete.component';
+import { SucessManagerEditComponent } from '../manager/sucess-manager-edit/sucess-manager-edit.component';
 @Component({
   selector: 'app-user',
   templateUrl: './user.component.html',
@@ -93,6 +95,10 @@ export class AppUserComponent implements AfterViewInit {
         this.userService.deleteUser(userId).subscribe(() => {
           // After successful deletion, refresh the user list
           this.refreshUserList();
+          this.dialog.open(SucessManagerDeleteComponent, {
+            width: '300px',
+            data: { message: "Delete Successfully" }
+          });
         }, error => {
           // Handle error if deletion fails
           console.error('Error deleting user:', error);
@@ -113,6 +119,10 @@ export class AppUserComponent implements AfterViewInit {
           console.log('Updated user:', updatedUser);
           // Refresh the user list or perform any necessary actions
           this.refreshUserList();
+          this.dialog.open(SucessManagerEditComponent, {
+            width: '300px',
+            data: { message: "Edit Successfully" } // Pass the message you want to show
+          });
         }, error => {
           console.error('Error updating user:', error);
         });

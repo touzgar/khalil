@@ -15,8 +15,10 @@
     </div>
       <div class="form-group">
         <label for="email">Email:</label>
-        <input type="email" id="email" name="email" [(ngModel)]="userData.email" required>
-      </div>
+        <input type="email" id="email" name="email" [(ngModel)]="userData.email" #emailField="ngModel" required email>
+        <mat-error *ngIf="emailField.errors?.['email'] && emailField.dirty">
+            Please enter a valid email address.
+        </mat-error>      </div>
       <div class="form-group">
         <label for="password">Password:</label>
         <input type="password" id="password" name="password" [(ngModel)]="userData.password" required>

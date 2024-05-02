@@ -1,6 +1,9 @@
-import { Component, OnInit } from '@angular/core';
-import { MatDialogRef } from '@angular/material/dialog';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { NgModel } from '@angular/forms';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { User } from 'src/app/pages/authentication/model/login.model';
+import { ErrorManagerDialogComponent } from '../../manager/error-manager-dialog/error-manager-dialog.component';
+import { SuccessManagerDialogComponent } from '../../manager/success-manager-dialog/success-manager-dialog.component';
 import { UserService } from '../user.service';
 
 @Component({
@@ -14,15 +17,26 @@ export class AddUserPopupComponent implements OnInit {
   imagePath:any;
   loading: boolean = false;
   progress: number = 0;
+  @ViewChild('emailField') emailField: NgModel
   constructor(
     public dialogRef: MatDialogRef<AddUserPopupComponent>,
-    private userService: UserService
+    private userService: UserService, public dialog:MatDialog
   ) { }
 
   ngOnInit(): void {
   }
 
   onSubmit(): void {
+    if (this.emailField && !this.emailField.valid) {
+      // Open the error dialog with the message
+      this.dialog.open(ErrorManagerDialogComponent, {
+        width: '300px',
+        data: {
+          errorMessage: 'Please enter a valid email address.'
+        }
+      });
+      return; // Stop further execution
+    }
     this.loading = true;  // Set loading to true to show spinner
 
     const payload = {
@@ -35,7 +49,11 @@ export class AddUserPopupComponent implements OnInit {
     this.userService.addUserWithRole(payload).subscribe({
       next: (newUser) => {
         console.log("User added successfully", newUser);
-        this.dialogRef.close(newUser); // Close dialog after successful operation
+        this.dialogRef.close(newUser); 
+        this.dialog.open(SuccessManagerDialogComponent, {
+          width: '300px',
+          data: { message: "User added successfully" }
+        });
       },
       error: (error) => {
         console.error('There was an error adding the user:', error);

@@ -1,0 +1,13 @@
+<div mat-dialog-container class="error-dialog-container">
+    <h2 mat-dialog-title class="error-title">
+      <mat-icon class="error-icon">error_outline</mat-icon>
+      Error Adding User
+    </h2>
+    <mat-dialog-content class="dialog-content">
+      <p>{{ data.errorMessage }}</p>
+    </mat-dialog-content>
+  
+    <mat-dialog-actions class="dialog-actions">
+      <button mat-button (click)="closeDialog()" class="close-button">Close</button>
+    </mat-dialog-actions>
+</div>

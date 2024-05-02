@@ -1,5 +1,8 @@
-import { Component, Inject } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { Component, Inject, ViewChild } from '@angular/core';
+import { NgModel } from '@angular/forms';
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { ErorManagerEditDialogComponent } from '../../manager/eror-manager-edit-dialog/eror-manager-edit-dialog.component';
+import { ErrorManagerDialogComponent } from '../../manager/error-manager-dialog/error-manager-dialog.component';
 
 @Component({
   selector: 'app-edit-user-dialog',
@@ -15,11 +18,13 @@ userData = {
   password: '', // Include the password field
   // roles: ''
 };
+@ViewChild('emailField') emailField: NgModel;
 
 
   constructor(
     public dialogRef: MatDialogRef<EditUserDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: any // Data passed when the dialog is called
+    @Inject(MAT_DIALOG_DATA) public data: any,
+    public dialog:MatDialog
   ) {
     // If data is passed to the dialog, initialize userData with it
     if (data) {
@@ -29,6 +34,13 @@ userData = {
 
   // Method to handle form submission
   onSubmit() {
+    if (!this.emailField.valid) {
+      this.dialog.open(ErorManagerEditDialogComponent, {
+        data: { errorMessage: "Please enter a valid email address." }
+      });
+      return; // Prevent closing the dialog if the form is invalid
+    }
+    
     // Close the dialog and return the updated userData
     this.dialogRef.close(this.userData);
   }

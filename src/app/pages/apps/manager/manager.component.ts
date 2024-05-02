@@ -12,6 +12,8 @@ import { DeleteUserDialogComponent } from '../user/delete-user-dialog/delete-use
 import { EditUserDialogComponent } from '../user/edit-user-dialog/edit-user-dialog.component';
 import { trigger, transition, style, animate } from '@angular/animations';
 import { AddUserManagerPopupComponent } from './add-user-manager-popup/add-user-manager-popup.component';
+import { SucessManagerDeleteComponent } from './sucess-manager-delete/sucess-manager-delete.component';
+import { SucessManagerEditComponent } from './sucess-manager-edit/sucess-manager-edit.component';
 export interface Manager {
   idManager: number;
   managerName: string;
@@ -111,14 +113,19 @@ export class AppManagerComponent implements AfterViewInit {
   openDeleteDialog(userId: number): void {
     const dialogRef = this.dialog.open(DeleteUserDialogComponent, {
       width: '300px',
+      data: { userId }
     });
   
     dialogRef.afterClosed().subscribe(result => {
-      if (result) {
-        // Call the method to delete the user if the user confirms deletion
+      if (result === true) {  // Assuming 'result' is true if the user confirms the deletion
         this.userService.deleteUser(userId).subscribe(() => {
           // After successful deletion, refresh the user list
           this.refreshUserList();
+          // Display success dialog
+          this.dialog.open(SucessManagerDeleteComponent, {
+            width: '300px',
+            data: { message: "Delete Successfully" }
+          });
         }, error => {
           // Handle error if deletion fails
           console.error('Error deleting user:', error);
@@ -126,6 +133,7 @@ export class AppManagerComponent implements AfterViewInit {
       }
     });
   }
+  
   
   openEditDialog(user: any): void {
     const dialogRef = this.dialog.open(EditUserDialogComponent, {
@@ -139,6 +147,10 @@ export class AppManagerComponent implements AfterViewInit {
           console.log('Updated user:', updatedUser);
           // Refresh the user list or perform any necessary actions
           this.refreshUserList();
+          this.dialog.open(SucessManagerEditComponent, {
+            width: '300px',
+            data: { message: "Edit Successfully" } // Pass the message you want to show
+          });
         }, error => {
           console.error('Error updating user:', error);
         });

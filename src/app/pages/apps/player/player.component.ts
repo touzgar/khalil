@@ -7,6 +7,9 @@ import { AppAddPlayerComponent } from './add/add.component';
 import { Player } from './player';
 import { PlayerServiceService } from './player-service.service';
 import { ThisReceiver } from '@angular/compiler';
+import { SucessAddedPlayerDialogComponent } from './sucess-added-player-dialog/sucess-added-player-dialog.component';
+import { SucessManagerDeleteComponent } from '../manager/sucess-manager-delete/sucess-manager-delete.component';
+import { SuccessEditPlayerDialogComponent } from './success-edit-player-dialog/success-edit-player-dialog.component';
 
 
 
@@ -75,10 +78,14 @@ export class AppPlayerComponent implements AfterViewInit {
     this.playerService.addPlayer(player).subscribe({
       next: (newPlayer) => {
         console.log("Player added successfully", newPlayer);
-        this.chargerPlayer(); // Refresh the list
+        this.chargerPlayer(); 
+        this.dialog.open(SucessAddedPlayerDialogComponent, {
+          width: '300px',
+          data: { message: "Player added successfully!" }
+        });
       },
       error: (error) => {
-        console.error("Error adding team", error);
+        console.error("Error adding player", error);
       }
     });
   }
@@ -87,12 +94,20 @@ export class AppPlayerComponent implements AfterViewInit {
     this.playerService.supprimerPlayer(player.idPlayer!).subscribe(() => {
       console.log('Player supprimé');
       this.chargerPlayer();
+      this.dialog.open(SucessManagerDeleteComponent, {
+        width: '300px',
+        data: { message: "Delete Successfully" }
+      });
    });
   }
   modifierPlayer(player: Player): void {
     this.playerService.updatePlayer(player).subscribe(() => {
       console.log('Player updated successfully');
-      this.chargerPlayer(); // Refresh the list
+      this.chargerPlayer(); 
+      this.dialog.open( SuccessEditPlayerDialogComponent, {
+        width: '300px',
+        data: { message: "Club Updated successfully!" }
+      });
     }, error => {
       console.error('Error updating player', error);
     });
@@ -133,7 +148,7 @@ export class AppPlayerComponent implements AfterViewInit {
   // tslint:disable-next-line - Disables all
   addRowData(row_obj: Player): void {
   
-    this.dialog.open(AppAddPlayerComponent);
+    //this.dialog.open(AppAddPlayerComponent);
     this.table.renderRows();
   }
 

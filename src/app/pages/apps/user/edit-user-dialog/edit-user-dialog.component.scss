@@ -129,3 +129,8 @@
     outline: none; /* Removes the default outline */
     box-shadow: 0 0 0 2px #fff, 0 0 0 4px #3f51b5; /* Custom focus ring */
 }
+.error-message {
+  color: red;
+  margin-top: 5px;
+}
+

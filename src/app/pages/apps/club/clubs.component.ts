@@ -7,6 +7,9 @@ import { AppAddClubComponent } from './add/add.component';
 import { Club } from './club.model';
 import { ClubService } from './club.service';
 import { ActivatedRoute, Router } from '@angular/router';
+import { SuccessClubDialogAddedComponent } from './success-club-dialog-added/success-club-dialog-added.component';
+import { SucessManagerDeleteComponent } from '../manager/sucess-manager-delete/sucess-manager-delete.component';
+import { SuccessEditClubDialogComponent } from './success-edit-club-dialog/success-edit-club-dialog.component';
 
 
 
@@ -88,7 +91,11 @@ export class AppClubComponent implements AfterViewInit {
     this.clubService.addClub(club).subscribe({
       next: (newClub) => {
         console.log("Club added successfully", newClub);
-        this.chargerClub(); // Refresh the list
+        this.chargerClub(); 
+        this.dialog.open(SuccessClubDialogAddedComponent, {
+          width: '300px',
+          data: { message: "Club added successfully!" }
+        });
       },
       error: (error) => {
         console.error("Error adding club", error);
@@ -100,13 +107,21 @@ export class AppClubComponent implements AfterViewInit {
   this.clubService.supprimerClub(club.idClub).subscribe(() => {
     console.log('Club supprimé');
     this.chargerClub();
+    this.dialog.open(SucessManagerDeleteComponent, {
+      width: '300px',
+      data: { message: "Delete Successfully" }
+    });
  });
 }
 
 modifierClub(club: Club): void {
   this.clubService.updateClub(club).subscribe(() => {
     console.log('Club updated successfully');
-    this.chargerClub(); // Refresh the list
+    this.chargerClub(); 
+    this.dialog.open( SuccessEditClubDialogComponent, {
+      width: '300px',
+      data: { message: "Club Updated successfully!" }
+    });
   }, error => {
     console.error('Error updating club', error);
   });
@@ -141,7 +156,7 @@ getCoachNamesForClub(club: Club): string {
   addRowData(row_obj: Club): void {
   
   
-    this.dialog.open(AppAddClubComponent);
+    //this.dialog.open(AppAddClubComponent);
     this.table.renderRows();
   }
 

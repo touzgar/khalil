@@ -139,6 +139,15 @@ import { LogicielSuccessDialogComponent } from './compitenceplayer/logiciel-succ
 import { MaterielSucessDialogComponent } from './compitenceplayer/materiel-sucess-dialog/materiel-sucess-dialog.component';
 import { UpdateScrimsDialogComponent } from './SessionTraining/update-scrims-dialog/update-scrims-dialog.component';
 import { ScrimsSuccessDialogComponentComponent } from './SessionTraining/scrims-success-dialog-component/scrims-success-dialog-component.component';
+import { SuccessManagerDialogComponent } from './manager/success-manager-dialog/success-manager-dialog.component';
+import { ErrorManagerDialogComponent } from './manager/error-manager-dialog/error-manager-dialog.component';
+import { SucessManagerDeleteComponent } from './manager/sucess-manager-delete/sucess-manager-delete.component';
+import { SucessManagerEditComponent } from './manager/sucess-manager-edit/sucess-manager-edit.component';
+import { ErorManagerEditDialogComponent } from './manager/eror-manager-edit-dialog/eror-manager-edit-dialog.component';
+import { SuccessClubDialogAddedComponent } from './club/success-club-dialog-added/success-club-dialog-added.component';
+import { SuccessEditClubDialogComponent } from './club/success-edit-club-dialog/success-edit-club-dialog.component';
+import { SucessAddedPlayerDialogComponent } from './player/sucess-added-player-dialog/sucess-added-player-dialog.component';
+import { SuccessEditPlayerDialogComponent } from './player/success-edit-player-dialog/success-edit-player-dialog.component';
 
 
 
@@ -274,7 +283,16 @@ AppCoachDialogContentComponent,
       LogicielSuccessDialogComponent,
       MaterielSucessDialogComponent,
       UpdateScrimsDialogComponent,
-      ScrimsSuccessDialogComponentComponent
+      ScrimsSuccessDialogComponentComponent,
+      SuccessManagerDialogComponent,
+      ErrorManagerDialogComponent,
+      SucessManagerDeleteComponent,
+      SucessManagerEditComponent,
+      ErorManagerEditDialogComponent,
+      SuccessClubDialogAddedComponent,
+      SuccessEditClubDialogComponent,
+      SucessAddedPlayerDialogComponent,
+      SuccessEditPlayerDialogComponent
     
      ],
      
