@@ -8,6 +8,11 @@ import { ContractPlayer } from './ContractPlayer.model';
 import { ContractPlayerService } from './contract-player.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Player } from '../player/player';
+import { SuccesAddedContractComponent } from './succes-added-contract/succes-added-contract.component';
+import { ErrorAddedContractDialogComponent } from './error-added-contract-dialog/error-added-contract-dialog.component';
+import { SucessManagerDeleteComponent } from '../manager/sucess-manager-delete/sucess-manager-delete.component';
+import { SuccessEditPlayerDialogComponent } from '../player/success-edit-player-dialog/success-edit-player-dialog.component';
+import { ErrorEditContractDialogComponent } from './error-edit-contract-dialog/error-edit-contract-dialog.component';
 
 
 
@@ -82,6 +87,10 @@ export class AppContractPlayerComponent implements AfterViewInit {
     this.contractPlayerService.supprimerContractPlayer(contractPlayer.idContractPlayer).subscribe(() => {
       console.log('ContractPlayer supprimé');
       this.chargerContractPlayer();
+      this.dialog.open(SucessManagerDeleteComponent, {
+        width: '300px',
+        data: { message: "Delete Successfully" }
+      });
    });
   }
   modifierContractPlayer(contractPlayer: ContractPlayer): void {
@@ -100,11 +109,24 @@ export class AppContractPlayerComponent implements AfterViewInit {
     this.contractPlayerService.updateContractPlayer(id, updateData).subscribe({
       next: (response) => {
         console.log('ContractPlayer updated successfully', response);
-        this.chargerContractPlayer(); // Refresh the list
+        this.chargerContractPlayer(); 
+        this.dialog.open( SuccessEditPlayerDialogComponent, {
+          width: '300px',
+          data: { message: "Contract Edit successfully!" }
+        });
       },
       error: (error) => {
         console.error('Error updating ContractPlayer', error);
+        this.openEditErrorDialog("Check information.");
       }
+    });
+  }
+
+
+  private openEditErrorDialog(errorMessage: string): void {
+    this.dialog.open(ErrorEditContractDialogComponent, {
+      width: '300px',
+      data: { errorMessage: errorMessage }
     });
   }
 //  // In your Angular component that calls the service
@@ -136,11 +158,25 @@ addContractPlayer(contractPlayerData: ContractPlayer) {
   this.contractPlayerService.addContractPlayer(payload).subscribe({
     next: (newContractPlayer) => {
       console.log("ContractPlayer added successfully", newContractPlayer);
-      this.chargerContractPlayer(); // Refresh the list of contract players
+      this.chargerContractPlayer(); 
+      this.openSuccessDialog("Contract added  successfully!");
     },
     error: (error) => {
       console.error("Error adding ContractPlayer", error);
+      this.openErrorDialog("Check Information");
     }
+  });
+}
+private openSuccessDialog(message: string): void {
+  this.dialog.open(SuccesAddedContractComponent, {
+    width: '300px',
+    data: { message: message }
+  });
+}
+private openErrorDialog(errorMessage: string): void {
+  this.dialog.open(ErrorAddedContractDialogComponent, {
+    width: '300px',
+    data: { errorMessage: errorMessage }
   });
 }
 
@@ -188,7 +224,7 @@ addContractPlayer(contractPlayerData: ContractPlayer) {
 
   // tslint:disable-next-line - Disables all
   addRowData(row_obj: ContractPlayer): void {
-    this.dialog.open(AppAddContractPlayerComponent);
+    // this.dialog.open(AppAddContractPlayerComponent);
     this.table.renderRows();
   }
 

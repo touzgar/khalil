@@ -148,6 +148,25 @@ import { SuccessClubDialogAddedComponent } from './club/success-club-dialog-adde
 import { SuccessEditClubDialogComponent } from './club/success-edit-club-dialog/success-edit-club-dialog.component';
 import { SucessAddedPlayerDialogComponent } from './player/sucess-added-player-dialog/sucess-added-player-dialog.component';
 import { SuccessEditPlayerDialogComponent } from './player/success-edit-player-dialog/success-edit-player-dialog.component';
+import { SuccessTournamentAddedDialogComponent } from './employee/success-tournament-added-dialog/success-tournament-added-dialog.component';
+import { SuccessAddedTeamToTournamentComponent } from './employee/success-added-team-to-tournament/success-added-team-to-tournament.component';
+import { ErrorAddedTeamToTournamentComponent } from './employee/error-added-team-to-tournament/error-added-team-to-tournament.component';
+import { ErrorRemoveTeamFromTournamentComponent } from './employee/error-remove-team-from-tournament/error-remove-team-from-tournament.component';
+import { SuccessRemoveTeamFromTournamentComponent } from './employee/success-remove-team-from-tournament/success-remove-team-from-tournament.component';
+import { SuccessAddedDefiDialogComponent } from './defi/success-added-defi-dialog/success-added-defi-dialog.component';
+import { ErrorAddedDefiToTournamentComponent } from './defi/error-added-defi-to-tournament/error-added-defi-to-tournament.component';
+import { SuccessAddedTeamDialogComponent } from './team/success-added-team-dialog/success-added-team-dialog.component';
+import { ErrorAddedTeamDialogComponent } from './team/error-added-team-dialog/error-added-team-dialog.component';
+import { ErrorEditTeamDialogComponent } from './team/error-edit-team-dialog/error-edit-team-dialog.component';
+import { SuccessRemovePlayerDialogComponent } from './team/success-remove-player-dialog/success-remove-player-dialog.component';
+import { ErrorRemovePlayerDialogComponent } from './team/error-remove-player-dialog/error-remove-player-dialog.component';
+import { SuccessAddedPlayerDialogComponent } from './team/success-added-player-dialog/success-added-player-dialog.component';
+import { ErrorAddedPlayerDialogComponent } from './team/error-added-player-dialog/error-added-player-dialog.component';
+import { SuccesAddedContractComponent } from './contractplayer/succes-added-contract/succes-added-contract.component';
+import { ErrorAddedContractDialogComponent } from './contractplayer/error-added-contract-dialog/error-added-contract-dialog.component';
+import { ErrorEditContractDialogComponent } from './contractplayer/error-edit-contract-dialog/error-edit-contract-dialog.component';
+import { SuccessaddedAchivementComponent } from './achievementplayer/successadded-achivement/successadded-achivement.component';
+import { ErrorAddedAchivementComponent } from './achievementplayer/error-added-achivement/error-added-achivement.component';
 
 
 
@@ -292,7 +311,26 @@ AppCoachDialogContentComponent,
       SuccessClubDialogAddedComponent,
       SuccessEditClubDialogComponent,
       SucessAddedPlayerDialogComponent,
-      SuccessEditPlayerDialogComponent
+      SuccessEditPlayerDialogComponent,
+      SuccessTournamentAddedDialogComponent,
+      SuccessAddedTeamToTournamentComponent,
+      ErrorAddedTeamToTournamentComponent,
+      ErrorRemoveTeamFromTournamentComponent,
+      SuccessRemoveTeamFromTournamentComponent,
+      SuccessAddedDefiDialogComponent,
+      ErrorAddedDefiToTournamentComponent,
+      SuccessAddedTeamDialogComponent,
+      ErrorAddedTeamDialogComponent,
+      ErrorEditTeamDialogComponent,
+      SuccessRemovePlayerDialogComponent,
+      ErrorRemovePlayerDialogComponent,
+      SuccessAddedPlayerDialogComponent,
+      ErrorAddedPlayerDialogComponent,
+      SuccesAddedContractComponent,
+      ErrorAddedContractDialogComponent,
+      ErrorEditContractDialogComponent,
+      SuccessaddedAchivementComponent,
+      ErrorAddedAchivementComponent
     
      ],
      

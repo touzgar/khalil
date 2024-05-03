@@ -106,7 +106,7 @@ export class AppPlayerComponent implements AfterViewInit {
       this.chargerPlayer(); 
       this.dialog.open( SuccessEditPlayerDialogComponent, {
         width: '300px',
-        data: { message: "Club Updated successfully!" }
+        data: { message: "Player Updated successfully!" }
       });
     }, error => {
       console.error('Error updating player', error);

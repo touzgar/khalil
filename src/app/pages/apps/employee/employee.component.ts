@@ -8,6 +8,13 @@ import { Tournament, Tournoi } from './Tournament.model';
 import { TournamentService } from './tournament.service';
 import { AddTeamsToTournamentComponent } from './add-teams-to-tournament/add-teams-to-tournament.component';
 import { RemoveTeamsToTournamentComponent } from './remove-teams-to-tournament/remove-teams-to-tournament.component';
+import { SuccessTournamentAddedDialogComponent } from './success-tournament-added-dialog/success-tournament-added-dialog.component';
+import { SucessManagerDeleteComponent } from '../manager/sucess-manager-delete/sucess-manager-delete.component';
+import { SuccessEditPlayerDialogComponent } from '../player/success-edit-player-dialog/success-edit-player-dialog.component';
+import { SuccessAddedTeamToTournamentComponent } from './success-added-team-to-tournament/success-added-team-to-tournament.component';
+import { ErrorAddedTeamToTournamentComponent } from './error-added-team-to-tournament/error-added-team-to-tournament.component';
+import { ErrorRemoveTeamFromTournamentComponent } from './error-remove-team-from-tournament/error-remove-team-from-tournament.component';
+import { SuccessRemoveTeamFromTournamentComponent } from './success-remove-team-from-tournament/success-remove-team-from-tournament.component';
 
 
 @Component({
@@ -138,7 +145,11 @@ addTournament(tournamentData: any) {
   this.tournamentService.addTournament(newTournoi).subscribe({
     next: (createdTournament) => {
       console.log("Tournament added successfully", createdTournament);
-      this.chargerTournament(); // Refresh the list
+      this.chargerTournament(); 
+      this.dialog.open( SuccessTournamentAddedDialogComponent, {
+        width: '300px',
+        data: { message: "Tournament added successfully!" }
+      });
     },
     error: (error) => {
       console.error("Error adding tournament", error);
@@ -148,7 +159,11 @@ addTournament(tournamentData: any) {
 modifierTournament(tournament: Tournament): void {
   this.tournamentService.updateTournament(tournament).subscribe(() => {
     console.log('Tournament updated successfully');
-    this.chargerTournament(); // Refresh the list
+    this.chargerTournament(); 
+    this.dialog.open( SuccessEditPlayerDialogComponent, {
+      width: '300px',
+      data: { message: "Tournamentated successfully!" }
+    });
   }, error => {
     console.error('Error updating player', error);
   });
@@ -160,6 +175,10 @@ modifierTournament(tournament: Tournament): void {
     this.tournamentService.supprimerTournament(tournament.idTournament!).subscribe(() => {
       console.log('Tournament supprimé');
       this.chargerTournament();
+      this.dialog.open(SucessManagerDeleteComponent, {
+        width: '300px',
+        data: { message: "Delete Successfully" }
+      });
    });
   }
   addTeamsToTournament(tournamentName: string, teamNamesString: string) {
@@ -168,13 +187,39 @@ modifierTournament(tournament: Tournament): void {
       next: (response) => {
         console.log("Teams added successfully", response);
         // Refresh the tournament data here if necessary
-        this.chargerTournament();
+        this.openSuccessDialog("Team added to tournament successfully!");
       },
       error: (error) => {
         console.error("Error adding teams to tournament", error);
+        this.openErrorDialog("Team or tournament not found.");
       }
     });
    }
+   private openSuccessDialog(message: string): void {
+    this.dialog.open(SuccessAddedTeamToTournamentComponent, {
+      width: '300px',
+      data: { message: message }
+    });
+  }
+   private openSuccessRemoveDialog(message: string): void {
+    this.dialog.open(SuccessRemoveTeamFromTournamentComponent, {
+      width: '300px',
+      data: { message: message }
+    });
+  }
+  
+  private openErrorDialog(errorMessage: string): void {
+    this.dialog.open(ErrorAddedTeamToTournamentComponent, {
+      width: '300px',
+      data: { errorMessage: errorMessage }
+    });
+  }
+  private openErrorRemoveDialog(errorMessage: string): void {
+    this.dialog.open(ErrorRemoveTeamFromTournamentComponent, {
+      width: '300px',
+      data: { errorMessage: errorMessage }
+    });
+  }
    getTeamNamesForTournament(tournament: Tournament): string {
         // Make sure to check if 'coaches' is not undefined or null
         return tournament.teams?.map(c => c.teamName).join(', ') || 'No teamName';
@@ -184,10 +229,12 @@ modifierTournament(tournament: Tournament): void {
         next: (response) => {
           console.log("Teams removed successfully", response);
           this.chargerTournament();
+          this.openSuccessRemoveDialog("Team Removed From tournament successfully!");
           // Refresh your team or players list here if necessary
         },
         error: (error) => {
           console.error("Error removing Teams from tournament", error);
+         this.openErrorRemoveDialog("Team or tournament not found.");
         }
       });
     } 
@@ -231,7 +278,7 @@ modifierTournament(tournament: Tournament): void {
   // tslint:disable-next-line - Disables all
   addRowData(row_obj: Tournament): void {
     
-    this.dialog.open(AppAddEmployeeComponent);
+   // this.dialog.open(AppAddEmployeeComponent);
     this.table.renderRows();
   }
 

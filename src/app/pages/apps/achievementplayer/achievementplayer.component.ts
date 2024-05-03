@@ -8,6 +8,10 @@ import { AchievementPlayer } from './achivementPlayer.model';
 import { AchivementPlayerService } from './achivement-player.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { addHours, formatISO, startOfDay } from 'date-fns';
+import { SuccessaddedAchivementComponent } from './successadded-achivement/successadded-achivement.component';
+import { ErrorAddedAchivementComponent } from './error-added-achivement/error-added-achivement.component';
+import { SucessManagerDeleteComponent } from '../manager/sucess-manager-delete/sucess-manager-delete.component';
+import { SuccessEditPlayerDialogComponent } from '../player/success-edit-player-dialog/success-edit-player-dialog.component';
 
 
 interface AchievementPlayerUpdateData extends Omit<AchievementPlayer, 'dateAchievement'> {
@@ -98,6 +102,11 @@ export class AppAchievementPlayerComponent implements AfterViewInit {
     this.achivementPlayerService.supprimeAchivementsPlayer(achievementPlayer.idAchievementPlayer).subscribe(() => {
       console.log('AchivementPlayer supprimé');
       this.chargerAchivementPlayer();
+      this.dialog.open(SucessManagerDeleteComponent, {
+        width: '300px',
+        data: { message: "Delete Successfully" }
+      });
+
    });
   }
   modifierAchivementPlayer(achievementPlayer: AchievementPlayer): void {
@@ -118,7 +127,12 @@ export class AppAchievementPlayerComponent implements AfterViewInit {
     this.achivementPlayerService.updateAchievementPlayer(id, updateData).subscribe({
       next: (response) => {
         console.log('AchievementPlayer updated successfully', response);
-        this.chargerAchivementPlayer(); // Refresh the list
+        this.chargerAchivementPlayer(); 
+        this.dialog.open( SuccessEditPlayerDialogComponent, {
+          width: '300px',
+          data: { message: "Achivement Edit successfully!" }
+        });
+
       },
       error: (error) => {
         console.error('Error updating AchievementPlayer', error);
@@ -137,13 +151,28 @@ export class AppAchievementPlayerComponent implements AfterViewInit {
   this.achivementPlayerService.addAchivement(payload).subscribe({
     next: (newAchivement) => {
       console.log("Achivement added successfully", newAchivement);
-      this.chargerAchivementPlayer(); // Refresh the list
+      this.chargerAchivementPlayer(); 
+      this.openSuccessDialog("Achivement added  successfully!");
     },
     error: (error) => {
       console.error("Error adding Achivement", error);
+      this.openErrorDialog("Check Information");
     }
   });
 }
+private openSuccessDialog(message: string): void {
+  this.dialog.open(SuccessaddedAchivementComponent, {
+    width: '300px',
+    data: { message: message }
+  });
+}
+private openErrorDialog(errorMessage: string): void {
+  this.dialog.open(ErrorAddedAchivementComponent, {
+    width: '300px',
+    data: { errorMessage: errorMessage }
+  });
+}
+
 
 searchAchivements(event: Event) {
   const inputElement = event.target as HTMLInputElement; // Cast to HTMLInputElement
@@ -170,7 +199,7 @@ onkeyUp(filterText:string){
 
   addRowData(row_obj: AchievementPlayer): void {
    
-    this.dialog.open(AppAddAchievementPlayerComponent);
+   // this.dialog.open(AppAddAchievementPlayerComponent);
     this.table.renderRows();
   }
 

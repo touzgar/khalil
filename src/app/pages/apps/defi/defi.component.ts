@@ -7,6 +7,8 @@ import { AppAddDefiComponent } from './add/add.component';
 import { Defi } from './defi.model';
 import { DefiService } from './defi.service';
 import { ActivatedRoute, Router } from '@angular/router';
+import { SuccessAddedDefiDialogComponent } from './success-added-defi-dialog/success-added-defi-dialog.component';
+import { ErrorAddedDefiToTournamentComponent } from './error-added-defi-to-tournament/error-added-defi-to-tournament.component';
 
 
 
@@ -116,12 +118,27 @@ export class AppDefiComponent implements AfterViewInit {
     this.defiService.addMatchToTournament(payload).subscribe({
         next: (response) => {
             console.log('Match added successfully:', response);
-            this.chargerDefi(); // Reload your data
-        },
+            this.chargerDefi(); 
+            this.openSuccessDialog("Match added to tournament successfully!");
+          },
         error: (error) => {
             console.error('Error adding match:', error);
+            this.openErrorDialog("Team or tournament not found.");
+
         }
     });
+}
+openSuccessDialog(message: string): void {
+  this.dialog.open(SuccessAddedDefiDialogComponent, {
+    width: '300px',
+    data: { message: message }
+  });
+}
+private openErrorDialog(errorMessage: string): void {
+  this.dialog.open(ErrorAddedDefiToTournamentComponent, {
+    width: '300px',
+    data: { errorMessage: errorMessage }
+  });
 }
 
   
@@ -163,7 +180,7 @@ export class AppDefiComponent implements AfterViewInit {
  
   // tslint:disable-next-line - Disables all
   addRowData(row_obj: Defi): void {
-    this.dialog.open(AppAddDefiComponent);
+   // this.dialog.open(AppAddDefiComponent);
     this.table.renderRows();
   }
 
