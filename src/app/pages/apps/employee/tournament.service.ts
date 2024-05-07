@@ -65,14 +65,15 @@ addTeamsToTournament(tournamentName: string, teamNames: string[]): Observable<an
     'Content-Type': 'application/json'
   });
 
-  // Construct query parameters manually if necessary
-  let queryParams = `tournamentName=${encodeURIComponent(tournamentName)}&teamNames=${encodeURIComponent(teamNames.join(','))}`;
+  // Create the payload
+  const payload = {
+    tournamentName: tournamentName,
+    teamNames: teamNames
+  };
 
-  // Use the full URL with query parameters
-  const url = `${this.baseUrl}/registerTeams?${queryParams}`;
-
-  return this.http.post<any>(url, {}, { headers });
+  return this.http.post<any>(`${this.baseUrl}/registerTeams`, payload, { headers });
 }
+
 removeTeamsFromTournament(tournamentName: string, teamNames: string[]): Observable<any> {
   const jwt = this.authService.getToken();
   const httpHeaders = new HttpHeaders({

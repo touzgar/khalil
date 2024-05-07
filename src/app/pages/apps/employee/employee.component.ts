@@ -87,16 +87,17 @@ export class AppEmployeeComponent implements AfterViewInit {
   openAddTeamsDialog(): void {
     const dialogRef = this.dialog.open(AddTeamsToTournamentComponent, {
       width: '600px',
-      data: { tournamentName: '', teamNames: '' }
+      data: { tournamentName: '', teamName: '' }
     });
   
     dialogRef.afterClosed().subscribe(result => {
-      if (result) {
-        // Ensure you're passing the correct parameters to the service method
-        this.addTeamsToTournament(result.tournamentName, result.teamNames);
+      if (result && result.tournamentName && result.teamName) {
+        const teamNamesArray = result.teamName.split(',').map((name: string) => name.trim());
+        this.addTeamsToTournament(result.tournamentName, teamNamesArray);
       }
     });
   }
+  
 
 
   openRemoveTeamsDialog(): void {
@@ -181,17 +182,17 @@ modifierTournament(tournament: Tournament): void {
       });
    });
   }
-  addTeamsToTournament(tournamentName: string, teamNamesString: string) {
-    const teamNames = teamNamesString.split(',').map(name => name.trim());
+  addTeamsToTournament(tournamentName: string,  teamNames: string[]) {
+    //const teamNames = teamNamesString.split(',').map(name => name.trim());
     this.tournamentService.addTeamsToTournament(tournamentName, teamNames).subscribe({
       next: (response) => {
         console.log("Teams added successfully", response);
-        // Refresh the tournament data here if necessary
-        this.openSuccessDialog("Team added to tournament successfully!");
+        this.chargerTournament();
+        this.openSuccessDialog("Teams added to tournament successfully!");
       },
       error: (error) => {
         console.error("Error adding teams to tournament", error);
-        this.openErrorDialog("Team or tournament not found.");
+        this.openErrorDialog("Teams or tournament not found.");
       }
     });
    }
