@@ -3,6 +3,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { catchError, Observable, throwError } from 'rxjs';
 import { AuthServiceService } from '../../authentication/auth-service.service';
+import { Player } from '../player/player';
 import { AchievementPlayer } from './achivementPlayer.model';
 
 @Injectable({
@@ -11,6 +12,7 @@ import { AchievementPlayer } from './achivementPlayer.model';
 export class AchivementPlayerService {
 achivementPlayer:AchievementPlayer[];
 baseUrl = 'http://localhost:8089/users/api/achievementPlayer';
+apiUrl = 'http://localhost:8089/users/api/player';
 
   constructor(private http: HttpClient,private authService:AuthServiceService) { }
 
@@ -20,6 +22,13 @@ baseUrl = 'http://localhost:8089/users/api/achievementPlayer';
     jwt="Bearer "+jwt;
     let httpHeaders=new HttpHeaders({"Authorization":jwt});
     return this.http.get<AchievementPlayer[]>(this.baseUrl+"/getAll",{headers:httpHeaders});
+  }
+  
+  listePlayer():Observable<Player[]>{
+    let jwt=this.authService.getToken();
+    jwt="Bearer "+jwt;
+    let httpHeaders=new HttpHeaders({"Authorization":jwt});
+    return this.http.get<Player[]>(this.apiUrl+"/getAll",{headers:httpHeaders});
   }
 
   supprimeAchivementsPlayer(id:number){

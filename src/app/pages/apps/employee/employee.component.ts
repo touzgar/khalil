@@ -20,6 +20,7 @@ import { SuccessRemoveTeamFromTournamentComponent } from './success-remove-team-
 @Component({
   
   templateUrl: './employee.component.html',
+  styleUrls:['./employee.component.scss'],
 })
 export class AppEmployeeComponent implements AfterViewInit {
   tournament:Tournament[];
@@ -91,12 +92,12 @@ export class AppEmployeeComponent implements AfterViewInit {
     });
   
     dialogRef.afterClosed().subscribe(result => {
-      if (result && result.tournamentName && result.teamName) {
-        const teamNamesArray = result.teamName.split(',').map((name: string) => name.trim());
-        this.addTeamsToTournament(result.tournamentName, teamNamesArray);
+      if (result && result.tournamentName) {
+        this.chargerTournament();
       }
     });
   }
+  
   
 
 

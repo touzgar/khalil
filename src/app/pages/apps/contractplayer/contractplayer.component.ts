@@ -18,6 +18,7 @@ import { ErrorEditContractDialogComponent } from './error-edit-contract-dialog/e
 
 @Component({
   templateUrl: './contractplayer.component.html',
+  styleUrls:['./contractplayer.component.scss']
 })
 export class AppContractPlayerComponent implements AfterViewInit {
   contractPlayer:ContractPlayer[];
@@ -251,10 +252,13 @@ export class AppContractPlayerDialogContentComponent {
   local_data: any;
   selectedImage: any = '';
   joiningDate: any = '';
+  players: Player[] = [];
+  filteredPlayers: Player[] = [];
 
   constructor(
     public datePipe: DatePipe,
     public dialogRef: MatDialogRef<AppContractPlayerDialogContentComponent>,
+    private contractPlayerService: ContractPlayerService,
     // @Optional() is used to prevent error if no data is passed
     @Optional() @Inject(MAT_DIALOG_DATA) public data: ContractPlayer,
   ) {
@@ -271,6 +275,20 @@ export class AppContractPlayerDialogContentComponent {
     }
   }
 
+  loadPlayers(): void {
+    if (this.players.length === 0) {
+      this.contractPlayerService.listePlayer().subscribe((players) => {
+        this.players = players;
+        this.filteredPlayers = players;
+      });
+    }
+  }
+
+  filterPlayers(value: string): void {
+    this.filteredPlayers = this.players.filter(player =>
+      player.leagalefullname.toLowerCase().includes(value.toLowerCase())
+    );
+  }
   doAction(): void {
     this.dialogRef.close({ event: this.action, data: this.local_data });
   }

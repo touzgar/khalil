@@ -1,8 +1,10 @@
 import { formatDate } from '@angular/common';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, throwError } from 'rxjs';
 import { AuthServiceService } from '../../authentication/auth-service.service';
+import { Tournament } from '../employee/Tournament.model';
+import { Team } from '../team/team.model';
 import { Defi } from './defi.model';
 
 @Injectable({
@@ -11,6 +13,7 @@ import { Defi } from './defi.model';
 export class DefiService {
   baseUrl = 'http://localhost:8089/users/api/defi';
   apiUrl = 'http://localhost:8089/users/api/tournament';
+  api='http://localhost:8089/users/api/team';
 
   defi!:Defi[];
   constructor(private http: HttpClient,private authService:AuthServiceService) { }
@@ -73,6 +76,23 @@ getHistoricalMatches(): Observable<Defi[]> {
   const httpHeaders = new HttpHeaders({ "Authorization": jwt });
 
   return this.http.get<Defi[]>(`${this.baseUrl}/historical`, { headers: httpHeaders });
+}
+listeTournament():Observable<Tournament[]>{
+  let jwt=this.authService.getToken();
+  jwt="Bearer "+jwt;
+  let httpHeaders=new HttpHeaders({"Authorization":jwt});
+  return this.http.get<Tournament[]>(this.baseUrl+"/getAll",{headers:httpHeaders});
+}
+getTeamsByTournament(tournamentName: string): Observable<Team[]> {
+  let jwt = this.authService.getToken();
+  jwt = "Bearer " + jwt;
+  const headers = new HttpHeaders({
+    'Authorization': jwt,
+    'Content-Type': 'application/json'
+  });
+  const params = new HttpParams().set("tournamentName", tournamentName);
+
+  return this.http.get<Team[]>(`${this.baseUrl}/teamsByTournament`, { headers, params });
 }
 
 

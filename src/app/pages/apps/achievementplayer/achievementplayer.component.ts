@@ -1,6 +1,6 @@
 import { Component, Inject, Optional, ViewChild, AfterViewInit, ChangeDetectorRef } from '@angular/core';
 import { MatTableDataSource, MatTable } from '@angular/material/table';
-import { MatPaginator } from '@angular/material/paginator';
+import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { DatePipe } from '@angular/common';
 import { AppAddAchievementPlayerComponent } from './add/add.component';
@@ -12,6 +12,7 @@ import { SuccessaddedAchivementComponent } from './successadded-achivement/succe
 import { ErrorAddedAchivementComponent } from './error-added-achivement/error-added-achivement.component';
 import { SucessManagerDeleteComponent } from '../manager/sucess-manager-delete/sucess-manager-delete.component';
 import { SuccessEditPlayerDialogComponent } from '../player/success-edit-player-dialog/success-edit-player-dialog.component';
+import { Player } from '../player/player';
 
 
 interface AchievementPlayerUpdateData extends Omit<AchievementPlayer, 'dateAchievement'> {
@@ -19,6 +20,7 @@ interface AchievementPlayerUpdateData extends Omit<AchievementPlayer, 'dateAchie
 }
 @Component({
   templateUrl: './achievementplayer.component.html',
+  styleUrls:['./achievementplayer.component.scss']
 })
 
 
@@ -192,7 +194,11 @@ onkeyUp(filterText:string){
 }
 
 
-
+handlePageEvent(event: PageEvent): void {
+  this.dataSource.paginator!.pageIndex = event.pageIndex;
+  this.dataSource.paginator!.pageSize = event.pageSize;
+  this.dataSource.paginator!.length = event.length;
+}
 
 
 
@@ -226,10 +232,12 @@ export class AppAchievementPlayerDialogContentComponent {
   local_data: any;
   selectedImage: any = '';
   joiningDate: any = '';
-
+  players: Player[] = [];
+  filteredPlayers: Player[] = [];
   constructor(
     public datePipe: DatePipe,
     public dialogRef: MatDialogRef<AppAchievementPlayerDialogContentComponent>,
+    private achivementPlayerService: AchivementPlayerService,
     // @Optional() is used to prevent error if no data is passed
     @Optional() @Inject(MAT_DIALOG_DATA) public data: AchievementPlayer,
   ) {
@@ -244,6 +252,18 @@ export class AppAchievementPlayerDialogContentComponent {
     if (this.local_data.imagePath === undefined) {
       this.local_data.imagePath = 'assets/images/profile/user-1.jpg';
     }
+  }
+  loadPlayers(): void {
+    if (this.players.length === 0) {
+      this.achivementPlayerService.listePlayer().subscribe((players) => {
+        this.players = players;
+        this.filteredPlayers = players;
+      });
+    }
+  }
+
+  filterPlayers(value: string): void {
+    this.filteredPlayers = this.players.filter(player => player.leagalefullname.toLowerCase().includes(value.toLowerCase()));
   }
 
   doAction(): void {

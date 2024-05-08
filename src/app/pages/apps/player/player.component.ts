@@ -17,6 +17,7 @@ import { SuccessEditPlayerDialogComponent } from './success-edit-player-dialog/s
 
 @Component({
   templateUrl: './player.component.html',
+  styleUrls: ['./player.component.scss']
 })
 export class AppPlayerComponent implements AfterViewInit {
   joueur=new Player();

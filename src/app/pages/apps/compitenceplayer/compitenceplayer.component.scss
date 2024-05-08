@@ -22,15 +22,12 @@
 }
 
 .cardWithShadow {
-  width: 300px;
-  border-radius: 8px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   position: relative;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column; /* Stack content vertically */
-  justify-content: space-between; /* Space between content and actions */
-  transition: box-shadow 0.3s ease-in-out;
+    width: 300px;
+    overflow: hidden;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease-in-out;
 }
 
 .cardWithShadow:hover {

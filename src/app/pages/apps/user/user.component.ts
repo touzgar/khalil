@@ -48,7 +48,7 @@ export class AppUserComponent implements AfterViewInit {
   currentPage: number = 1;
   pageSizeOptions: number[] = [5, 10, 20,1000];
   pageNumbers: number[] = [];
-
+  isLoading: boolean = false;
 
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
@@ -115,10 +115,12 @@ export class AppUserComponent implements AfterViewInit {
   
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
+        this.isLoading = true;
         this.userService.updateUser(user.userId, result).subscribe(updatedUser => {
           console.log('Updated user:', updatedUser);
           // Refresh the user list or perform any necessary actions
           this.refreshUserList();
+          this.isLoading = false;
           this.dialog.open(SucessManagerEditComponent, {
             width: '300px',
             data: { message: "Edit Successfully" } // Pass the message you want to show

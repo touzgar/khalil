@@ -9,6 +9,9 @@ import { DefiService } from './defi.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SuccessAddedDefiDialogComponent } from './success-added-defi-dialog/success-added-defi-dialog.component';
 import { ErrorAddedDefiToTournamentComponent } from './error-added-defi-to-tournament/error-added-defi-to-tournament.component';
+import { Tournament } from '../employee/Tournament.model';
+import { TournamentService } from '../employee/tournament.service';
+import { Team } from '../team/team.model';
 
 
 
@@ -16,6 +19,7 @@ import { ErrorAddedDefiToTournamentComponent } from './error-added-defi-to-tourn
 
 @Component({
   templateUrl: './defi.component.html',
+  styleUrls:['./defi.component.scss']
 })
 export class AppDefiComponent implements AfterViewInit {
   defi!:Defi[];
@@ -24,6 +28,10 @@ export class AppDefiComponent implements AfterViewInit {
   titleDefi!:string;
   allDefi!:Defi[];
   searchTerm!:string;
+  tournaments: Tournament[] = [];
+  filteredTournaments: Tournament[] = [];
+  selectedTeams: string[] = [];
+
 
   @ViewChild(MatTable, { static: true }) table: MatTable<any> = Object.create(null);
   searchText: any;
@@ -38,7 +46,7 @@ export class AppDefiComponent implements AfterViewInit {
   dataSource = new MatTableDataSource<Defi>([]);
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator = Object.create(null);
 
-  constructor(public dialog: MatDialog, public datePipe: DatePipe,private defiService:DefiService, 
+  constructor(public dialog: MatDialog, public datePipe: DatePipe,private defiService:DefiService, private tournamentService: TournamentService,
     private changeDetectorRefs: ChangeDetectorRef,private router:Router, private activateRoute: ActivatedRoute) { }
 
   ngAfterViewInit(): void {
@@ -70,7 +78,16 @@ export class AppDefiComponent implements AfterViewInit {
     });
   }
 
- 
+  loadTournaments(): void {
+    this.tournamentService.listeTournament().subscribe((tournaments) => {
+      this.tournaments = tournaments;
+      this.filteredTournaments = tournaments;
+    });
+  }
+  filterTournaments(value: string): void {
+    this.filteredTournaments = this.tournaments.filter(t => t.tournamentName.toLowerCase().includes(value.toLowerCase()));
+  }
+
 
 
 
@@ -205,10 +222,15 @@ export class AppDefiDialogContentComponent {
   local_data: any;
   selectedImage: any = '';
   joiningDate: any = '';
+  tournaments: Tournament[] = [];
+  filteredTournaments: Tournament[] = [];
+  teams: Team[] = [];
+  filteredTeams: Team[] = [];
 
   constructor(
     public datePipe: DatePipe,
     public dialogRef: MatDialogRef<AppDefiDialogContentComponent>,
+    private tournamentService: TournamentService, private defiService:DefiService,
     // @Optional() is used to prevent error if no data is passed
     @Optional() @Inject(MAT_DIALOG_DATA) public data: Defi,
   ) {
@@ -231,7 +253,27 @@ export class AppDefiDialogContentComponent {
   closeDialog(): void {
     this.dialogRef.close({ event: 'Cancel' });
   }
+  loadTournaments(): void {
+    if (this.tournaments.length === 0) {
+      this.tournamentService.listeTournament().subscribe((tournaments) => {
+        this.tournaments = tournaments;
+        this.filteredTournaments = tournaments;
+      });
+    }
+  }
 
+  filterTournaments(value: string): void {
+    this.filteredTournaments = this.tournaments.filter(t => t.tournamentName.toLowerCase().includes(value.toLowerCase()));
+  }
+  loadTeams(): void {
+    const tournamentName = this.local_data.tournamentName || '';
+    if (tournamentName) {
+      this.defiService.getTeamsByTournament(tournamentName).subscribe((teams) => {
+        this.teams = teams;
+        this.filteredTeams = teams;
+      });
+    }
+  }
   selectFile(event: any): void {
     if (!event.target.files[0] || event.target.files[0].length === 0) {
       // this.msg = 'You must select an image';

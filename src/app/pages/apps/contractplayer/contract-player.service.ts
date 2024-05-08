@@ -2,6 +2,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { AuthServiceService } from '../../authentication/auth-service.service';
+import { Player } from '../player/player';
 import { ContractPlayer } from './ContractPlayer.model';
 
 @Injectable({
@@ -10,6 +11,7 @@ import { ContractPlayer } from './ContractPlayer.model';
 export class ContractPlayerService {
 contractPlayer:ContractPlayer[];
 baseUrl = 'http://localhost:8089/users/api/contractPlayer';
+apiUrl = 'http://localhost:8089/users/api/player';
   constructor(private http: HttpClient,private authService:AuthServiceService) { }
 
   listeContractPlayer():Observable<ContractPlayer[]>{
@@ -17,6 +19,12 @@ baseUrl = 'http://localhost:8089/users/api/contractPlayer';
     jwt="Bearer "+jwt;
     let httpHeaders=new HttpHeaders({"Authorization":jwt});
     return this.http.get<ContractPlayer[]>(this.baseUrl+"/getAll",{headers:httpHeaders});
+  }
+  listePlayer():Observable<Player[]>{
+    let jwt=this.authService.getToken();
+    jwt="Bearer "+jwt;
+    let httpHeaders=new HttpHeaders({"Authorization":jwt});
+    return this.http.get<Player[]>(this.apiUrl+"/getAll",{headers:httpHeaders});
   }
   supprimerContractPlayer(id:number){
     const url=`${this.baseUrl}/delete/${id}`;

@@ -1,17 +1,35 @@
-<h2 mat-dialog-title>Remove Teams From Tournament/h2>
+<h2 mat-dialog-title>Remove Teams From Tournament</h2>
 <mat-dialog-content class="mat-typography">
   <form #coachTeamForm="ngForm">
     <mat-form-field appearance="fill">
       <mat-label>Tournament Name</mat-label>
-      <input matInput [(ngModel)]="data.tournamentName" name="tournamentName" required>
+      <input matInput
+             [(ngModel)]="data.tournamentName"
+             name="tournamentName"
+             [matAutocomplete]="tournamentAutocomplete"
+             required
+             (focus)="loadTournaments()"
+             (input)="filterTournaments(data.tournamentName)"
+             (ngModelChange)="onTournamentChange()"
+      />
+      <mat-autocomplete #tournamentAutocomplete="matAutocomplete">
+        <mat-option *ngFor="let tournament of filteredTournaments" [value]="tournament.tournamentName">
+          {{ tournament.tournamentName }}
+        </mat-option>
+      </mat-autocomplete>
     </mat-form-field>
+
     <mat-form-field appearance="fill">
-      <mat-label>Team Name</mat-label>
-      <input matInput [(ngModel)]="data.teamNames" name="teamNames" required>
+      <mat-label>Team Names</mat-label>
+      <mat-select [(ngModel)]="selectedTeams" multiple name="teamNames" required>
+        <mat-option *ngFor="let team of teams" [value]="team.teamName">
+          {{ team.teamName }}
+        </mat-option>
+      </mat-select>
     </mat-form-field>
   </form>
 </mat-dialog-content>
 <mat-dialog-actions align="end">
   <button mat-button (click)="onNoClick()">Cancel</button>
-  <button mat-button [disabled]="!coachTeamForm.form.valid" (click)="onRemoveClick()">Remove</button>
+  <button mat-button [disabled]="!coachTeamForm.form.valid || selectedTeams.length === 0" (click)="onRemoveClick()">Remove</button>
 </mat-dialog-actions>

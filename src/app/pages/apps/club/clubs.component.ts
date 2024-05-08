@@ -16,6 +16,7 @@ import { SuccessEditClubDialogComponent } from './success-edit-club-dialog/succe
 
 @Component({
   templateUrl: './club.component.html',
+  styleUrls:['./club.component.scss']
 })
 export class AppClubComponent implements AfterViewInit {
   club:Club[];

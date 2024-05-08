@@ -12,7 +12,19 @@
         <div class="col-lg-6">
           <mat-form-field appearance="outline" class="w-100 mb-2">
             <mat-label>Tournament Name</mat-label>
-            <input matInput placeholder="Tournament Name" [(ngModel)]="local_data.tournamentName" name="tournamentName" required>
+            <input matInput
+                   placeholder="Tournament Name"
+                   [matAutocomplete]="auto"
+                   [(ngModel)]="local_data.tournamentName"
+                   name="tournamentName"
+                   (focus)="loadTournaments()"
+                   (ngModelChange)="filterTournaments($event)"
+                   required>
+            <mat-autocomplete #auto="matAutocomplete">
+              <mat-option *ngFor="let tournament of filteredTournaments" [value]="tournament.tournamentName">
+                {{ tournament.tournamentName }}
+              </mat-option>
+            </mat-autocomplete>
           </mat-form-field>
         </div>
         <div class="col-lg-6">

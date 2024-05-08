@@ -1,3 +1,7 @@
+<div *ngIf="isLoading" class="loading-overlay">
+  <mat-spinner class="mat-spinner" diameter="50"></mat-spinner>
+  <div class="loading-message">Please wait...</div>
+</div>
 <div class="user-manager-container"[@fadeIn] >
   <mat-toolbar color="primary" class="user-manager-toolbar">
        <mat-form-field appearance="fill" class="toolbar-search-input">

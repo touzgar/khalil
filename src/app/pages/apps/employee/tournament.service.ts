@@ -2,6 +2,7 @@ import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { AuthServiceService } from '../../authentication/auth-service.service';
+import { Team } from '../team/team.model';
 import { Tournament, Tournoi } from './Tournament.model';
 
 @Injectable({
@@ -11,6 +12,7 @@ export class TournamentService {
 tournament:Tournament[];
 tournoi:Tournoi[];
 baseUrl = 'http://localhost:8089/users/api/tournament';
+apiUrl='http://localhost:8089/users/api/team';
 
   constructor(private http: HttpClient,private authService:AuthServiceService) { }
 
@@ -19,6 +21,12 @@ baseUrl = 'http://localhost:8089/users/api/tournament';
     jwt="Bearer "+jwt;
     let httpHeaders=new HttpHeaders({"Authorization":jwt});
     return this.http.get<Tournament[]>(this.baseUrl+"/getAll",{headers:httpHeaders});
+  }
+  listeTeam():Observable<Team[]>{
+    let jwt=this.authService.getToken();
+    jwt="Bearer "+jwt;
+    let httpHeaders=new HttpHeaders({"Authorization":jwt});
+    return this.http.get<Team[]>(this.apiUrl+"/getAll",{headers:httpHeaders});
   }
   supprimerTournament(id:number){
     const url=`${this.baseUrl}/delete/${id}`;
@@ -59,13 +67,14 @@ updateTournament(tournament: Tournament): Observable<Tournament> {
   return this.http.put<Tournament>(`${this.baseUrl}/update/${tournament.idTournament}`, tournament, { headers: httpHeaders });
 }
 addTeamsToTournament(tournamentName: string, teamNames: string[]): Observable<any> {
-  const jwt = this.authService.getToken();
+  let jwt = this.authService.getToken();
+  jwt = "Bearer " + jwt;
   const headers = new HttpHeaders({
-    'Authorization': `Bearer ${jwt}`,
+    'Authorization': jwt,
     'Content-Type': 'application/json'
   });
 
-  // Create the payload
+  // Ensure `teamNames` is correctly passed as an array
   const payload = {
     tournamentName: tournamentName,
     teamNames: teamNames
@@ -103,6 +112,17 @@ rechercheParNameTournament(tournamentName: string): Observable<Tournament[]> {
   });
 
   return this.http.get<Tournament[]>(url, { headers: httpHeaders });
+}
+getTeamsByTournament(tournamentName: string): Observable<Team[]> {
+  let jwt = this.authService.getToken();
+  jwt = "Bearer " + jwt;
+  const headers = new HttpHeaders({
+    'Authorization': jwt,
+    'Content-Type': 'application/json'
+  });
+  const params = new HttpParams().set("tournamentName", tournamentName);
+
+  return this.http.get<Team[]>(`${this.baseUrl}/teamsByTournament`, { headers, params });
 }
 
 

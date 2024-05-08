@@ -1,19 +1,26 @@
-<h2 class="f-w-500 m-b-24" mat-dialog-title><strong>{{action}}</strong></h2>
-@if(action !== 'Delete') {
+<h2 class="f-w-500 m-b-24" mat-dialog-title><strong>{{ action }}</strong></h2>
+
 <mat-dialog-content style="max-width: 600px">
-  <form #userForm="ngForm">
+  <form #userForm="ngForm" *ngIf="action !== 'Delete'">
     <div class="row">
       <div class="col-lg-6">
         <mat-form-field appearance="outline" class="w-100">
           <input
-            type="text"
             matInput
             required
             id="playerName"
             name="playerName"
             [(ngModel)]="local_data.playerName"
-            placeholder="playerName"
+            placeholder="Player Name"
+            [matAutocomplete]="autoPlayer"
+            (focus)="loadPlayers()"
+            (ngModelChange)="filterPlayers($event)"
           />
+          <mat-autocomplete #autoPlayer="matAutocomplete">
+            <mat-option *ngFor="let player of filteredPlayers" [value]="player.leagalefullname">
+              {{ player.leagalefullname }}
+            </mat-option>
+          </mat-autocomplete>
         </mat-form-field>
       </div>
       <div class="col-lg-6">
@@ -25,26 +32,23 @@
             id="trophie"
             name="trophie"
             [(ngModel)]="local_data.trophie"
-            placeholder="trophie"
+            placeholder="Trophie"
           />
         </mat-form-field>
       </div>
-      
-      
-          <div class="col-lg-4">
+      <div class="col-lg-4">
         <mat-form-field appearance="outline" class="w-100">
           <input
-                  type="date"
-                placeholder="dateAchievement"
-                matInput
-                required
-                id="dateAchievement"
-                name="dateAchievement"
-                [(ngModel)]="local_data.dateAchievement" />
-
+            type="date"
+            placeholder="Date Achievement"
+            matInput
+            required
+            id="dateAchievement"
+            name="dateAchievement"
+            [(ngModel)]="local_data.dateAchievement"
+          />
         </mat-form-field>
       </div>
-     
     </div>
     <button
       mat-flat-button
@@ -53,7 +57,7 @@
       color="primary"
       [disabled]="!userForm.valid"
     >
-      {{action}}
+      {{ action }}
     </button>
     <button
       mat-stroked-button
@@ -64,15 +68,13 @@
       Cancel
     </button>
   </form>
+  <div *ngIf="action === 'Delete'" class="p-x-24">
+    <p>Are you sure you want to delete <span class="f-w-600">{{ local_data.Name }}</span>?</p>
+    <div mat-dialog-actions class="p-x-24 p-b-24">
+      <button mat-button (click)="doAction()" mat-flat-button color="warn">
+        {{ action }}
+      </button>
+      <button mat-button (click)="closeDialog()" class="m-l-8">Cancel</button>
+    </div>
+  </div>
 </mat-dialog-content>
-} @else {
-<div class="p-x-24">
-  <p>Sure to delete <span class="f-w-600">{{local_data.Name}}</span> ?</p>
-</div>
-<div mat-dialog-actions class="p-x-24 p-b-24">
-  <button mat-button (click)="doAction()" mat-flat-button color="warn">
-    {{action}}
-  </button>
-  <button mat-button (click)="closeDialog()" class="m-l-8">Cancel</button>
-</div>
-}
