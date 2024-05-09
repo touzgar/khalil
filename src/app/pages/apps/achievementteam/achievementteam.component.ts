@@ -1,77 +1,91 @@
-import { Component, Inject, Optional, ViewChild, AfterViewInit } from '@angular/core';
+import { Component, Inject, Optional, ViewChild, AfterViewInit, ChangeDetectorRef } from '@angular/core';
 import { MatTableDataSource, MatTable } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { DatePipe } from '@angular/common';
 import { AppAddAchievementPlayerComponent } from '../achievementplayer/add/add.component';
+import {  AchievementTeam } from './AchivementTeam.model';
+import { AchivementTeamService } from './achivement-team.service';
+import { SucessManagerDeleteComponent } from '../manager/sucess-manager-delete/sucess-manager-delete.component';
+import { AppAchievementTeamDeleteDialogComponent } from './app-achievement-team-delete-dialog/app-achievement-team-delete-dialog.component';
+import { Team } from '../team/team.model';
+import { Observable } from 'rxjs';
+import { FormControl } from '@angular/forms';
 
 
 
 
-export interface Achivment {
-  idAchivementsTeam: number;
-  tournamentName: string;
-  Trophie: string[];
-  dateAchived: Date;
-  achievementRank: string;
-teamname?:string;
-}
+// export interface Achivment {
+//   idAchivementsTeam: number;
+//   tournamentName: string;
+//   Trophie: string[];
+//   dateAchived: Date;
+//   achievementRank: string;
+// teamname?:string;
+// }
 
-const achivments = [
-  {
-    idAchivementsTeam: 1,
-    tournamentName: 'lol',
-    Trophie: ['First Place Trophy', 'Second Place Trophy'],
-    dateAchived: new Date('2023-01-15'),
-    achievementRank: 'bronze2',
-  },
-  {
-    idAchivementsTeam: 2,
-    tournamentName: 'valo',
-    Trophie: ['First Place Trophy', 'Second Place Trophy'],
-    dateAchived: new Date('2023-01-15'),
-    achievementRank: 'bronze2',
-  },
-  {
-    idAchivementsTeam: 3,
-    tournamentName: 'csgo',
-    Trophie: ['First Place Trophy', 'Second Place Trophy'],
-    dateAchived: new Date('2023-01-15'),
-    achievementRank: 'bronze2',
-  },
-  {
-    idAchivementsTeam: 4,
-    tournamentName: 'wow',
-    Trophie: ['First Place Trophy', 'Second Place Trophy'],
-    dateAchived: new Date('2023-01-15'),
-    achievementRank: 'bronze2',
-  },
-];
+// const achivments = [
+//   {
+//     idAchivementsTeam: 1,
+//     tournamentName: 'lol',
+//     Trophie: ['First Place Trophy', 'Second Place Trophy'],
+//     dateAchived: new Date('2023-01-15'),
+//     achievementRank: 'bronze2',
+//   },
+//   {
+//     idAchivementsTeam: 2,
+//     tournamentName: 'valo',
+//     Trophie: ['First Place Trophy', 'Second Place Trophy'],
+//     dateAchived: new Date('2023-01-15'),
+//     achievementRank: 'bronze2',
+//   },
+//   {
+//     idAchivementsTeam: 3,
+//     tournamentName: 'csgo',
+//     Trophie: ['First Place Trophy', 'Second Place Trophy'],
+//     dateAchived: new Date('2023-01-15'),
+//     achievementRank: 'bronze2',
+//   },
+//   {
+//     idAchivementsTeam: 4,
+//     tournamentName: 'wow',
+//     Trophie: ['First Place Trophy', 'Second Place Trophy'],
+//     dateAchived: new Date('2023-01-15'),
+//     achievementRank: 'bronze2',
+//   },
+// ];
 
 @Component({
   templateUrl: './achievementteam.component.html',
+  styleUrls:['./achievementteam.component.scss'],
 })
 export class AppAchievementTeamComponent implements AfterViewInit {
+  achivement:AchievementTeam[];
+ 
   @ViewChild(MatTable, { static: true }) table: MatTable<any> = Object.create(null);
   searchText: any;
   displayedColumns: string[] = [
-    '#',
-    'tournamentName',
+   
+    'teamName',
     'Trophie',
     'dateAchived',
     'achievementRank',
     'action'
-
   ];
-  dataSource = new MatTableDataSource(achivments);
+  
+  
+  dataSource = new MatTableDataSource<AchievementTeam>([]) 
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator = Object.create(null);
 
-  constructor(public dialog: MatDialog, public datePipe: DatePipe) { }
+  constructor(public dialog: MatDialog, public datePipe: DatePipe,private achivementService:AchivementTeamService
+    ,  private changeDetectorRefs: ChangeDetectorRef) { }
 
   ngAfterViewInit(): void {
     this.dataSource.paginator = this.paginator;
-  }
+    this.chargerAchivementTeam();
+     }
 
+  
   applyFilter(filterValue: string): void {
     this.dataSource.filter = filterValue.trim().toLowerCase();
   }
@@ -83,48 +97,103 @@ export class AppAchievementTeamComponent implements AfterViewInit {
     });
     dialogRef.afterClosed().subscribe((result) => {
       if (result.event === 'Add') {
+        this.addAchivement(result.data);
         this.addRowData(result.data);
       } else if (result.event === 'Update') {
+        this. modifierAchivementTeam(result.data);
         this.updateRowData(result.data);
       } else if (result.event === 'Delete') {
+       
         this.deleteRowData(result.data);
       }
     });
   }
+  openDeleteDialog(element: AchievementTeam): void {
+    const dialogRef = this.dialog.open(AppAchievementTeamDeleteDialogComponent, {
+      data: { action: 'Delete', element }
+    });
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result.event === 'Delete') {
+        this.deleteAchivementTeam(element);
+      }
+    });
+  }
+  chargerAchivementTeam() {
+    this.achivementService.listeAchievementTeam().subscribe(achivements => {
+      console.log(achivements); // Check the console to make sure 'coach' is populated
+      this.achivement = achivements;
+      this.dataSource.data = this.achivement; // Update the table's data source
+      this.changeDetectorRefs.detectChanges(); // Trigger change detection
+    });
+  }
+  deleteAchivementTeam(achivement: AchievementTeam){
+    this.achivementService.supprimerAchievementTeam(achivement.achivementId).subscribe(() => {
+      console.log('AchivementTeam supprimé');
+      this.chargerAchivementTeam();
+      this.dialog.open(SucessManagerDeleteComponent, {
+        width: '300px',
+        data: { message: "Delete Successfully" }
+      });
 
+   });
+  }
+  modifierAchivementTeam(achievementTeam: AchievementTeam): void {
+    const updateData = {
+      ...achievementTeam,
+      dateAchived: new Date(achievementTeam.dateAchived).toISOString().split('T')[0], // Format date as "yyyy-MM-dd"
+      trophies: Array.isArray(achievementTeam.trophies) ? achievementTeam.trophies : (achievementTeam.trophies as unknown as string).split(','), // Ensure Trophie is an array
+    };
+  
+    // Construct the payload with the correct field names
+    const payload = {
+      achievementRank: updateData.achievementRank,
+      trophies: updateData.trophies,
+      dateAchived: updateData.dateAchived
+    };
+  
+    this.achivementService.updateAchievementTeam(achievementTeam.achivementId, payload).subscribe({
+      next: (response) => {
+        console.log('AchievementTeam updated successfully', response);
+        this.chargerAchivementTeam();
+      },
+      error: (error) => {
+        console.error('Error updating AchievementTeam', error);
+      }
+    });
+  }
+  
+  
+  addAchivement(achivement: AchievementTeam): void {
+    // Convert Trophie from string to array
+    achivement.trophies = achivement.trophies.toString().split(',');
+
+    this.achivementService.addAchievementTeam(achivement).subscribe({
+      next: (newAchivement) => {
+        console.log("Achievement Team added successfully", newAchivement);
+        this.chargerAchivementTeam();
+        this.table.renderRows();
+      },
+      error: (error) => {
+        console.error("Error adding Achievement Team", error);
+      }
+    });
+  }
+  
   // tslint:disable-next-line - Disables all
-  addRowData(row_obj: Achivment): void {
-    this.dataSource.data.unshift({
-      idAchivementsTeam: achivments.length + 1,
-      tournamentName: row_obj.tournamentName,
-      Trophie: row_obj.Trophie,
-      dateAchived: new Date(),
-      achievementRank: row_obj.achievementRank,
+  addRowData(row_obj:AchievementTeam): void {
       
      
-    });
-    this.dialog.open(AppAddAchievementPlayerComponent);
+ //   this.dialog.open(AppAddAchievementPlayerComponent);
     this.table.renderRows();
   }
 
   // tslint:disable-next-line - Disables all
-  updateRowData(row_obj: Achivment): boolean | any {
-    this.dataSource.data = this.dataSource.data.filter((value: any) => {
-      if (value.idAchivementsTeam === row_obj.idAchivementsTeam) {
-        value.tournamentName = row_obj.tournamentName;
-        value.Trophie = row_obj.Trophie;
-        value.dateAchived = row_obj.dateAchived;
-        value.achievementRank = row_obj.achievementRank;
-      }
-      return true;
-    });
-  }
+  updateRowData(row_obj: AchievementTeam): boolean | any {
+    }
 
   // tslint:disable-next-line - Disables all
-  deleteRowData(row_obj: Achivment): boolean | any {
-    this.dataSource.data = this.dataSource.data.filter((value: any) => {
-      return value.idAchivementsTeam !== row_obj.idAchivementsTeam;
-    });
+  deleteRowData(row_obj: AchievementTeam): boolean | any {
+    
   }
 }
 
@@ -140,50 +209,44 @@ export class AppAchievementTeamDialogContentComponent {
   local_data: any;
   selectedImage: any = '';
   joiningDate: any = '';
+  teams: Team[] = [];
+  filteredTeams: Observable<Team[]>;
+  teamControl = new FormControl();
+
 
   constructor(
     public datePipe: DatePipe,
-    public dialogRef: MatDialogRef<AppAchievementTeamDialogContentComponent>,
+    public dialogRef: MatDialogRef<AppAchievementTeamDialogContentComponent>,private achivementService:AchivementTeamService,
     // @Optional() is used to prevent error if no data is passed
-    @Optional() @Inject(MAT_DIALOG_DATA) public data: Achivment,
+    @Optional() @Inject(MAT_DIALOG_DATA) public data: AchievementTeam
   ) {
     this.local_data = { ...data };
     this.action = this.local_data.action;
-    if (this.local_data.DateOfJoining !== undefined) {
-      this.joiningDate = this.datePipe.transform(
-        new Date(this.local_data.DateOfJoining),
-        'yyyy-MM-dd',
+
+    // Convert Trophie array to a comma-separated string
+    if (Array.isArray(this.local_data.trophies)) {
+      this.local_data.trophies = this.local_data.trophies.join(',');
+    }
+
+    // Convert date to the correct format if it exists
+    if (this.local_data.dateAchived !== undefined) {
+      this.local_data.dateAchived = this.datePipe.transform(
+        new Date(this.local_data.dateAchived),
+        'yyyy-MM-dd'
       );
     }
-    if (this.local_data.imagePath === undefined) {
-      this.local_data.imagePath = 'assets/images/profile/user-1.jpg';
-    }
   }
-
+  
   doAction(): void {
+    // Convert Trophie back to an array before passing it back
+    // if (typeof this.local_data.trophies === 'string') {
+    //   this.local_data.trophies = this.local_data.trophies.split(',').map((t: string) => t.trim());
+    // }
+
     this.dialogRef.close({ event: this.action, data: this.local_data });
   }
+
   closeDialog(): void {
     this.dialogRef.close({ event: 'Cancel' });
-  }
-
-  selectFile(event: any): void {
-    if (!event.target.files[0] || event.target.files[0].length === 0) {
-      // this.msg = 'You must select an image';
-      return;
-    }
-    const mimeType = event.target.files[0].type;
-    if (mimeType.match(/image\/*/) == null) {
-      // this.msg = "Only images are supported";
-      return;
-    }
-    // tslint:disable-next-line - Disables all
-    const reader = new FileReader();
-    reader.readAsDataURL(event.target.files[0]);
-    // tslint:disable-next-line - Disables all
-    reader.onload = (_event) => {
-      // tslint:disable-next-line - Disables all
-      this.local_data.imagePath = reader.result;
-    };
-  }
+  } 
 }

@@ -167,6 +167,7 @@ import { ErrorAddedContractDialogComponent } from './contractplayer/error-added-
 import { ErrorEditContractDialogComponent } from './contractplayer/error-edit-contract-dialog/error-edit-contract-dialog.component';
 import { SuccessaddedAchivementComponent } from './achievementplayer/successadded-achivement/successadded-achivement.component';
 import { ErrorAddedAchivementComponent } from './achievementplayer/error-added-achivement/error-added-achivement.component';
+import { AppAchievementTeamDeleteDialogComponent } from './achievementteam/app-achievement-team-delete-dialog/app-achievement-team-delete-dialog.component';
 
 
 
@@ -330,7 +331,8 @@ AppCoachDialogContentComponent,
       ErrorAddedContractDialogComponent,
       ErrorEditContractDialogComponent,
       SuccessaddedAchivementComponent,
-      ErrorAddedAchivementComponent
+      ErrorAddedAchivementComponent,
+      AppAchievementTeamDeleteDialogComponent
     
      ],
      

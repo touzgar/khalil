@@ -2,6 +2,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { AuthServiceService } from '../../authentication/auth-service.service';
+import { Team } from '../team/team.model';
 import { AchievementTeam } from './AchivementTeam.model';
 
 @Injectable({
@@ -10,6 +11,7 @@ import { AchievementTeam } from './AchivementTeam.model';
 export class AchivementTeamService {
   achivementTeam:AchievementTeam[];
   baseUrl = 'http://localhost:8089/users/api/achivementTeam';
+  apiUrl = 'http://localhost:8089/users/api/team';
   constructor(private http: HttpClient,private authService:AuthServiceService) { }
 
   listeAchievementTeam():Observable<AchievementTeam[]>{
@@ -17,6 +19,12 @@ export class AchivementTeamService {
     jwt="Bearer "+jwt;
     let httpHeaders=new HttpHeaders({"Authorization":jwt});
     return this.http.get<AchievementTeam[]>(this.baseUrl+"/getAll",{headers:httpHeaders});
+  }
+  listeTeam():Observable<Team[]>{
+    let jwt=this.authService.getToken();
+    jwt="Bearer "+jwt;
+    let httpHeaders=new HttpHeaders({"Authorization":jwt});
+    return this.http.get<Team[]>(this.apiUrl+"/getAll",{headers:httpHeaders});
   }
  // Inside your AchivementTeamService class
 
@@ -46,11 +54,13 @@ consulterAchievementTeam(id:number):Observable<AchievementTeam>{
 
   return this.http.get<AchievementTeam>(url,{headers:httpHeaders});
 }
-updateAchievementTeam(achievementTeam: AchievementTeam): Observable<AchievementTeam> {
+updateAchievementTeam(id: number, payload: any): Observable<AchievementTeam> {
   let jwt = this.authService.getToken();
-  jwt = "Bearer " + jwt;
-  let httpHeaders = new HttpHeaders({ "Authorization": jwt });
+  jwt = 'Bearer ' + jwt;
+  const httpHeaders = new HttpHeaders({ Authorization: jwt });
+  const url = `${this.baseUrl}/update/${id}`;
 
-  return this.http.put<AchievementTeam>(`${this.baseUrl}/update/${achievementTeam.idAchivementsTeam}`, achievementTeam, { headers: httpHeaders });
+  return this.http.put<AchievementTeam>(url, payload, { headers: httpHeaders });
 }
+
 }

@@ -1,10 +1,12 @@
-import { Team } from "../team/team.model";
+import { Team } from '../team/team.model';
 
-export class AchievementTeam{
-    idAchivementsTeam: number;
-    Trophie: string[];
-    dateAchived: Date;
-    achievementRank: string;
-    teamName:string;
-    teams: Team[] 
+export class AchievementTeam {
+  achivementId: number;
+  trophies: string[] = []; // Correct field name
+  dateAchived: Date;
+  achievementRank: string; // Correct field name
+  teamName: string; // Included for binding
+  team: Team;
 }
+
+
