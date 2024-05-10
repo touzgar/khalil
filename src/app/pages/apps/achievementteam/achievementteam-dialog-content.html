@@ -1,25 +1,30 @@
-<!-- achievementteam-dialog-content.html -->
-<h2 class="f-w-500 m-b-24" mat-dialog-title><strong>{{action}}</strong></h2>
+<h2 class="f-w-500 m-b-24" mat-dialog-title><strong>{{ action }}</strong></h2>
 <mat-dialog-content style="max-width: 600px">
   <form #userForm="ngForm">
     <div class="row">
       <div class="col-lg-6">
-        <mat-form-field appearance="outline" class="w-100">
+        <mat-form-field appearance="fill" class="w-100">
+          <mat-label>Team Name</mat-label>
           <input
-            type="text"
             matInput
-            
             id="teamName"
             name="teamName"
+            required
             [(ngModel)]="local_data.teamName"
-            placeholder="Team Name"
+            [matAutocomplete]="autoTeam"
+            (input)="filterTeams($event)"
           />
+          <mat-autocomplete #autoTeam="matAutocomplete">
+            <mat-option *ngFor="let team of filteredTeams" [value]="team.teamName">
+              {{ team.teamName }}
+            </mat-option>
+          </mat-autocomplete>
         </mat-form-field>
       </div>
       <div class="col-lg-6">
-        <mat-form-field appearance="outline" class="w-100">
+        <mat-form-field appearance="fill" class="w-100">
+          <mat-label>Achievement Rank</mat-label>
           <input
-            type="text"
             matInput
             required
             id="Rank"
@@ -30,9 +35,9 @@
         </mat-form-field>
       </div>
       <div class="col-lg-6">
-        <mat-form-field appearance="outline" class="w-100">
+        <mat-form-field appearance="fill" class="w-100">
+          <mat-label>Trophies (comma-separated)</mat-label>
           <input
-            type="text"
             matInput
             required
             id="Trophie"
@@ -43,7 +48,8 @@
         </mat-form-field>
       </div>
       <div class="col-lg-6">
-        <mat-form-field appearance="outline" class="w-100">
+        <mat-form-field appearance="fill" class="w-100">
+          <mat-label>Date Achieved</mat-label>
           <input
             type="date"
             matInput
@@ -61,7 +67,7 @@
       color="primary"
       [disabled]="!userForm.valid"
     >
-      {{action}}
+      {{ action }}
     </button>
     <button
       mat-stroked-button

@@ -1,4 +1,4 @@
-import { Component, Inject, Optional, ViewChild, AfterViewInit, ChangeDetectorRef } from '@angular/core';
+import { Component, Inject, Optional, ViewChild, AfterViewInit, ChangeDetectorRef, OnInit } from '@angular/core';
 import { MatTableDataSource, MatTable } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
@@ -203,15 +203,15 @@ export class AppAchievementTeamComponent implements AfterViewInit {
   templateUrl: 'achievementteam-dialog-content.html',
 })
 // tslint:disable-next-line: component-class-suffix
-export class AppAchievementTeamDialogContentComponent {
+export class AppAchievementTeamDialogContentComponent implements OnInit {
   action: string;
   // tslint:disable-next-line - Disables all
   local_data: any;
   selectedImage: any = '';
   joiningDate: any = '';
   teams: Team[] = [];
-  filteredTeams: Observable<Team[]>;
-  teamControl = new FormControl();
+  filteredTeams: Team[] = [];
+ 
 
 
   constructor(
@@ -236,7 +236,25 @@ export class AppAchievementTeamDialogContentComponent {
       );
     }
   }
-  
+  ngOnInit(): void {
+      this.loadTeams();
+  }
+  loadTeams(): void {
+    this.achivementService.listeTeam().subscribe((teams) => {
+      this.teams = teams;
+      this.filteredTeams = teams;
+    });
+  }
+
+  filterTeams(event: Event): void {
+    const inputElement = event.target as HTMLInputElement;
+    const value = inputElement.value.toLowerCase();
+    this.filteredTeams = this.teams.filter((team) =>
+      team.teamName.toLowerCase().includes(value)
+    );
+  }
+
+
   doAction(): void {
     // Convert Trophie back to an array before passing it back
     // if (typeof this.local_data.trophies === 'string') {
