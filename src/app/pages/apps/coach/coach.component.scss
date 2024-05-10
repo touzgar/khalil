@@ -1,0 +1,64 @@
+/* Assuming this is in a global styles file or the relevant component styles file */
+
+.cardWithShadow {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    margin-bottom: 16px;
+  }
+  
+  .p-24 {
+    padding: 24px;
+  }
+  
+  .row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  
+  .justify-content-end {
+    justify-content: flex-end;
+  }
+  
+  .align-items-center {
+    align-items: center;
+  }
+  
+  .add-button {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  
+  .f-s-16 {
+    font-size: 16px;
+  }
+  
+  .f-s-14 {
+    font-size: 14px;
+  }
+  
+  .f-w-600 {
+    font-weight: 600;
+  }
+  
+  .action-link a {
+    color: #3f51b5;
+  }
+  
+  .cursor-pointer {
+    cursor: pointer;
+  }
+  
+  .m-r-10 {
+    margin-right: 10px;
+  }
+  
+  .table-responsive {
+    overflow-x: auto;
+  }
+  
+  .w-100 {
+    width: 100%;
+  }
+  

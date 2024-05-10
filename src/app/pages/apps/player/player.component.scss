@@ -80,4 +80,59 @@
     border-radius: 50%;
     margin-bottom: 10px;
   }
-  
+  /* Assuming this is in a global styles file or the relevant component styles file */
+
+.f-w-500 {
+  font-weight: 500;
+}
+
+.f-w-600 {
+  font-weight: 600;
+}
+
+.m-b-16 {
+  margin-bottom: 16px;
+}
+
+.m-b-24 {
+  margin-bottom: 24px;
+}
+
+.m-l-8 {
+  margin-left: 8px;
+}
+
+.p-x-24 {
+  padding-left: 24px;
+  padding-right: 24px;
+}
+
+.p-b-24 {
+  padding-bottom: 24px;
+}
+
+.w-100 {
+  width: 100%;
+}
+
+.dialog-content {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.col-lg-4, .col-lg-6 {
+  flex: 1 0 calc(33.3333% - 8px); /* Adjust this as per grid requirements */
+  min-width: 200px;
+}
+
+.action-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}

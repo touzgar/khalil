@@ -1,92 +1,41 @@
-<h2 class="f-w-500 m-b-24" mat-dialog-title><strong>{{action}}</strong></h2>
-@if(action !== 'Delete') {
-<mat-dialog-content style="max-width: 600px">
-  <form #userForm="ngForm">
+<h2 class="f-w-500 m-b-24" mat-dialog-title>{{ action }} Sponsor Contract</h2>
+<mat-dialog-content>
+  <form>
     <div class="row">
       <div class="col-lg-6">
         <mat-form-field appearance="outline" class="w-100">
-          <input
-            type="text"
-            matInput
-            required
-            id="nameCoach"
-            name="nameCoach"
-            [(ngModel)]="local_data.nameCoach"
-            placeholder="nameCoach"
-          />
+          <input matInput placeholder="Sponsor Contract Name" [(ngModel)]="local_data.sponsorContractName" name="sponsorContractName" />
         </mat-form-field>
       </div>
       <div class="col-lg-6">
         <mat-form-field appearance="outline" class="w-100">
-          <input
-            type="text"
-            matInput
-            required
-            id="email"
-            name="email"
-            [(ngModel)]="local_data.email"
-            placeholder="email"
-          />
+          <input matInput type="date" placeholder="Start Date" [(ngModel)]="local_data.dateStart" name="dateStart" />
         </mat-form-field>
       </div>
-      
-      
-
       <div class="col-lg-6">
         <mat-form-field appearance="outline" class="w-100">
-          <input
-            matInput
-            placeholder="Rapport"
-            [(ngModel)]="local_data.rapport"
-            name="rapport"
-          />
+          <input matInput type="date" placeholder="End Date" [(ngModel)]="local_data.dateEnd" name="dateEnd" />
         </mat-form-field>
       </div>
-      
       <div class="col-lg-6">
         <mat-form-field appearance="outline" class="w-100">
-          <input
-            matInput
-            placeholder="Club Name"
-            [(ngModel)]="local_data.clubName"
-            name="clubName"
-          />
+          <input matInput placeholder="Objectif" [(ngModel)]="local_data.objectif" name="objectif" />
         </mat-form-field>
       </div>
-      
-     
-      
-
-
-
+      <div class="col-lg-6">
+        <mat-form-field appearance="outline" class="w-100">
+          <input matInput placeholder="Sponsor Username" [(ngModel)]="local_data.sponsorUsername" name="sponsorUsername" />
+        </mat-form-field>
+      </div>
+      <div class="col-lg-6">
+        <mat-form-field appearance="outline" class="w-100">
+          <input matInput placeholder="Team Name" [(ngModel)]="local_data.teamName" name="teamName" />
+        </mat-form-field>
+      </div>
     </div>
-    <button
-      mat-flat-button
-      (click)="doAction()"
-      mat-flat-button
-      color="primary"
-      [disabled]="!userForm.valid"
-    >
-      {{action}}
-    </button>
-    <button
-      mat-stroked-button
-      color="warn"
-      class="m-l-8"
-      (click)="closeDialog()"
-    >
-      Cancel
-    </button>
+    <div class="mt-3">
+      <button mat-flat-button color="primary" (click)="doAction()">{{ action }}</button>
+      <button mat-stroked-button color="warn" class="m-l-8" (click)="closeDialog()">Cancel</button>
+    </div>
   </form>
 </mat-dialog-content>
-} @else {
-<div class="p-x-24">
-  <p>Sure to delete <span class="f-w-600">{{local_data.Name}}</span> ?</p>
-</div>
-<div mat-dialog-actions class="p-x-24 p-b-24">
-  <button mat-button (click)="doAction()" mat-flat-button color="warn">
-    {{action}}
-  </button>
-  <button mat-button (click)="closeDialog()" class="m-l-8">Cancel</button>
-</div>
-}

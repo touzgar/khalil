@@ -7,8 +7,17 @@ import { AppAddCoachComponent } from './add/add.component';
 import { Coach } from './coach.model';
 import { CoachService } from './coach.service';
 import { ActivatedRoute, Router } from '@angular/router';
+import { ContractSponsor } from '../club/ContractSponsor.model';
 
-
+export interface DialogData {
+  sponsorContractName: string;
+  dateStart: string;
+  dateEnd: string;
+  objectif: string;
+  sponsorUsername: string;
+  teamName: string;
+  action: string;
+}
 
 
 
@@ -17,6 +26,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   templateUrl: './coach.component.html',
+  styleUrls:['./coach.component.scss'],
 })
 export class AppCoachComponent implements AfterViewInit {
   coach:Coach[];
@@ -27,12 +37,11 @@ export class AppCoachComponent implements AfterViewInit {
   allCoach!:Coach[];
   searchTerm!:string;
 
-  
+  contract:ContractSponsor[];
   @ViewChild(MatTable, { static: true }) table: MatTable<any> = Object.create(null);
   searchText: any;
-  displayedColumns: string[] = ['idCoach', 'nameCoach', 'email', 'rapport', 'clubName', 'action'];
-
-  dataSource = new MatTableDataSource<Coach>([])
+  displayedColumns: string[] = ['sponsorContractName', 'dateStart', 'dateEnd', 'objectif', 'teamName', 'action'];
+  dataSource = new MatTableDataSource<ContractSponsor>([])
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator = Object.create(null);
 
   constructor(public dialog: MatDialog, public datePipe: DatePipe,private coachService:CoachService,
@@ -40,7 +49,7 @@ export class AppCoachComponent implements AfterViewInit {
 
   ngAfterViewInit(): void {
     this.dataSource.paginator = this.paginator;
-    this.chargerCoach();
+    this.loadContracts();
     // this.coachService.consulterCoach(this.activateRoute.snapshot.params['id']).subscribe(coach => {
     //   this.currentCoach = coach;
     //   console.log(coach);
@@ -53,35 +62,66 @@ export class AppCoachComponent implements AfterViewInit {
 
 
   openDialog(action: string, obj: any): void {
-    obj.action = action;
+    const dialogData: DialogData = {
+      sponsorContractName: obj.sponsorContractName || '',
+      dateStart: this.datePipe.transform(obj.dateStart, 'yyyy-MM-dd') || '',
+      dateEnd: this.datePipe.transform(obj.dateEnd, 'yyyy-MM-dd') || '',
+      objectif: obj.objectif || '',
+      sponsorUsername: obj.sponsor?.sponsorName || '',
+      teamName: obj.team?.teamName || '',
+      action: action
+    };
+
     const dialogRef = this.dialog.open(AppCoachDialogContentComponent, {
-      data: obj,
+      data: dialogData
     });
+
     dialogRef.afterClosed().subscribe((result) => {
       if (result.event === 'Add') {
-        this.addCoach(result.data);
-        this.addRowData(result.data);
+        this.addSponsorContract(result.data);
       } else if (result.event === 'Update') {
-        this.modifierCoach(result.data);
-        this.updateRowData(result.data);
+        this.updateSponsorContract(obj.idSponsorContract, result.data);
       } else if (result.event === 'Delete') {
-        this.deleteCoach(result.data);
-        this.deleteRowData(result.data);
+        this.deleteContract(obj);
       }
     });
   }
-
 
 
   chargerCoach() {
     this.coachService.listeCoach().subscribe(coachs => {
       console.log(coachs); // To see the exact structure right before assignment
       this.coach = coachs;
-      this.dataSource.data = this.coach;
+      this.dataSource.data = this.contract;
       this.changeDetectorRefs.detectChanges();
     });
     
   }
+  loadContracts() {
+    console.log(this.contract)
+    this.coachService.listeContract().subscribe(contracts => {
+      this.contract = contracts;
+      this.dataSource.data = this.contract;
+      this.changeDetectorRefs.detectChanges();
+    });
+  }  
+  
+  updateSponsorContract(id: number, data: DialogData) {
+    const payload = {
+      sponsorContractName: data.sponsorContractName,
+      dateStart: data.dateStart,
+      dateEnd: data.dateEnd,
+      objectif: data.objectif,
+      sponsorUsername: data.sponsorUsername,
+      teamName: data.teamName
+    };
+
+    this.coachService.updateSponsorContract(id, payload).subscribe({
+      next: () => this.loadContracts(),
+      error: (error) => console.error("Error updating sponsor contract", error)
+    });
+  }
+
   addCoach(coach: Coach) {
     this.coachService.addCoach(coach).subscribe({
       next: (newCoach) => {
@@ -93,11 +133,33 @@ export class AppCoachComponent implements AfterViewInit {
       }
     });
   }
+  addSponsorContract(data: DialogData) {
+    const payload = {
+      sponsorContractName: data.sponsorContractName,
+      dateStart: data.dateStart,
+      dateEnd: data.dateEnd,
+      objectif: data.objectif,
+      sponsorUsername: data.sponsorUsername,
+      teamName: data.teamName
+    };
+
+    this.coachService.addSponsorContract(payload).subscribe({
+      next: () => this.loadContracts(),
+      error: (error) => console.error("Error adding sponsor contract", error)
+    });
+  }
 
   deleteCoach(coach:Coach){
     this.coachService.supprimerCoach(coach.idCoach).subscribe(() => {
       console.log('Coach supprimé');
       this.chargerCoach();
+   });
+  }
+  
+  deleteContract(contract:ContractSponsor){
+    this.coachService.supprimerContract(contract.idSponsorContract).subscribe(() => {
+      console.log('Contract supprimé');
+      this.loadContracts();
    });
   }
   
@@ -116,7 +178,7 @@ export class AppCoachComponent implements AfterViewInit {
   
     if (searchTerm) {
       this.coachService.rechercheParNameCoach(searchTerm).subscribe(coachs => {
-        this.dataSource.data = coachs;
+       // this.dataSource.data = coachs;
       }, error => {
         console.error('Error during search:', error);
         this.dataSource.data = [];
@@ -153,6 +215,15 @@ export class AppCoachComponent implements AfterViewInit {
   deleteRowData(row_obj: Coach): boolean | any {
      }
 }
+export interface DialogData {
+  sponsorContractName: string;
+  dateStart: string;
+  dateEnd: string;
+  objectif: string;
+  sponsorUsername: string;
+  teamName: string;
+  action: string;
+}
 
 @Component({
   // tslint:disable-next-line: component-selector
@@ -161,6 +232,7 @@ export class AppCoachComponent implements AfterViewInit {
 })
 // tslint:disable-next-line: component-class-suffix
 export class AppCoachDialogContentComponent {
+
   action: string;
   // tslint:disable-next-line - Disables all
   local_data: any;
@@ -170,50 +242,17 @@ export class AppCoachDialogContentComponent {
   constructor(
     public datePipe: DatePipe,
     public dialogRef: MatDialogRef<AppCoachDialogContentComponent>,
-    // @Optional() is used to prevent error if no data is passed
-    @Optional() @Inject(MAT_DIALOG_DATA) public data: Coach,
+    @Optional() @Inject(MAT_DIALOG_DATA) public data: DialogData
   ) {
-    this.local_data = { ...data };
-    
+    this.local_data = {...data};
     this.action = this.local_data.action;
-    if (this.local_data.DateOfJoining !== undefined) {
-      this.joiningDate = this.datePipe.transform(
-        new Date(this.local_data.DateOfJoining),
-        'yyyy-MM-dd',
-      );
-    }
-    if (this.local_data.imagePath === undefined) {
-      this.local_data.imagePath = 'assets/images/profile/user-1.jpg';
-    }
   }
-
-
-  
 
   doAction(): void {
     this.dialogRef.close({ event: this.action, data: this.local_data });
   }
+
   closeDialog(): void {
     this.dialogRef.close({ event: 'Cancel' });
-  }
-
-  selectFile(event: any): void {
-    if (!event.target.files[0] || event.target.files[0].length === 0) {
-      // this.msg = 'You must select an image';
-      return;
-    }
-    const mimeType = event.target.files[0].type;
-    if (mimeType.match(/image\/*/) == null) {
-      // this.msg = "Only images are supported";
-      return;
-    }
-    // tslint:disable-next-line - Disables all
-    const reader = new FileReader();
-    reader.readAsDataURL(event.target.files[0]);
-    // tslint:disable-next-line - Disables all
-    reader.onload = (_event) => {
-      // tslint:disable-next-line - Disables all
-      this.local_data.imagePath = reader.result;
-    };
   }
 }
